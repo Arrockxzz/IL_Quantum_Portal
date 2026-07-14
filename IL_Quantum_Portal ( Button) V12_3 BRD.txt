@@ -1,0 +1,1371 @@
+Sure buddy — below is **one consolidated notepad-ready master prompt/documentation**.  
+You can copy-paste the full content into Notepad and save it as:
+
+```text
+IL_Quantum_Portal_V12_3_Master_Documentation.txt
+```
+
+```text
+============================================================
+IL_QUANTUM_PORTAL V12_3
+MASTER DOCUMENTATION / REBUILD PROMPT / FUNCTIONAL GUIDE
+============================================================
+
+VERSION NAME:
+IL_Quantum_Portal V12_3
+
+CURRENT LOCKED BASELINE:
+IL_Quantum_Portal V12_3 is the active locked baseline.
+
+IMPORTANT BASELINE RULE:
+All future modifications must be made over IL_Quantum_Portal V12_3 only.
+Existing functionality must not be removed unless explicitly requested.
+Only impacted blocks should be replaced during future enhancements.
+
+============================================================
+1. PROJECT PURPOSE
+============================================================
+
+IL Quantum is a browser-based single-page enterprise dashboard portal designed as a unified data hub for intelligent insurance / health / corporate reporting decisions.
+
+The portal allows users to:
+
+1. Enter through a branded animated homepage.
+2. Select role-based access through navigation cards.
+3. Access a dashboard page for data upload and analysis.
+4. Upload CSV / Excel files or folders.
+5. Parse and combine uploaded datasets.
+6. Dynamically generate filters.
+7. Render dashboard sections as tables and charts.
+8. Toggle all sections between table and graph view.
+9. Create custom charts.
+10. Export raw data, graph data, table data, PPT, and PDF.
+11. Customize theme, color, dark mode, font size, Top N records, chart colors, parser delay, file size, and file count.
+12. Use compact uploaded file progress popup during parsing.
+13. Use animated dashboard menu icons and chart action icons.
+
+============================================================
+2. APPLICATION PAGE STRUCTURE
+============================================================
+
+The complete application contains three major pages:
+
+PAGE 1:
+Homepage / Entry Page
+
+PAGE 2:
+Role Navigation Page
+
+PAGE 3:
+Dashboard Page
+
+All pages exist inside one HTML file.
+The application is controlled through HTML, CSS, and JavaScript only.
+No backend server is required.
+
+============================================================
+3. HOMEPAGE / ENTRY PAGE
+============================================================
+
+PURPOSE:
+The homepage is the first page visible when the portal opens.
+It acts as the visual entry gate into IL Quantum.
+
+VISUAL THEME:
+Modern blue gradient entry page with a glass-style central brand panel.
+
+BACKGROUND:
+Linear gradient:
+#4facfe to #00f2fe
+
+MAIN TEXT:
+IL Quantum
+
+TAGLINE:
+A Unified Data Hub for Intelligent Decisions
+
+ANIMATION:
+The homepage includes a door-opening animation.
+
+ANIMATION BEHAVIOR:
+- Page has two full-height doors:
+  1. Left door
+  2. Right door
+- On click, left door slides left.
+- On click, right door slides right.
+- Center brand card fades and moves slightly upward.
+- After 1200ms, homepage hides and navigation page opens.
+
+KEY BLOCKS:
+BLOCK 03 - HOMEPAGE CSS / DOOR OPENING ANIMATION
+BLOCK 11 - HOMEPAGE HTML
+BLOCK 18 - PAGE NAVIGATION JS
+
+KEY FUNCTION:
+internalLogin()
+
+FUNCTION DETAILS:
+internalLogin() performs the following:
+1. Sets internalLoggedIn = true.
+2. Adds class "door-open" to homepage.
+3. Waits 1200ms.
+4. Hides homepage.
+5. Shows main navigation page.
+
+DO NOT MODIFY CASUALLY:
+BLOCK 03 and BLOCK 11 are sensitive because they control the homepage animation.
+
+============================================================
+4. ROLE NAVIGATION PAGE
+============================================================
+
+PURPOSE:
+The role navigation page appears after the homepage door animation.
+It provides role-based access selection.
+
+ROLE CARDS:
+1. Business Team
+2. Relationship Manager
+3. Corporate Client
+4. Admin
+
+CURRENT ACCESS:
+Only Business Team opens the dashboard.
+Other role cards are currently locked placeholder paths.
+
+VISUAL THEME:
+- Blue gradient background.
+- White central navigation shell.
+- Four role cards in a grid.
+- Each card includes icon, title, and subtitle.
+- Cards have rounded corners and soft hover lift.
+
+ROLE CARD DETAILS:
+
+BUSINESS TEAM:
+Icon: 👤
+Title: Business Team
+Subtitle: Access to consolidated reports across all policies.
+Action: openInternalEmp()
+
+RELATIONSHIP MANAGER:
+Icon: 🌐
+Title: Relationship Manager
+Subtitle: Access restricted to policies mapped to assigned clients.
+Action: lockedPath('External Emp')
+
+CORPORATE CLIENT:
+Icon: 🏢
+Title: Corporate Client
+Subtitle: Access limited to issued policies.
+Action: lockedPath('Corporates')
+
+ADMIN:
+Icon: ⚙️
+Title: Admin
+Subtitle: Responsible for system administration, development, and enhancement activities.
+Action: lockedPath('Admin')
+
+KEY BLOCKS:
+BLOCK 04 - NAVIGATION CSS / USER ROLE CARDS
+BLOCK 12 - NAVIGATION HTML / USER ROLE LIST
+BLOCK 18 - PAGE NAVIGATION JS
+
+KEY FUNCTIONS:
+
+openInternalEmp()
+- Checks if internalLoggedIn is true.
+- If false, shows warning toast.
+- If true, hides navigation and opens dashboard.
+
+lockedPath(pathName)
+- Shows warning toast for locked paths.
+
+goToHome()
+- Hides dashboard and navigation.
+- Shows homepage.
+- Removes door-open class.
+- Sets internalLoggedIn = false.
+
+============================================================
+5. DASHBOARD PAGE OVERVIEW
+============================================================
+
+PURPOSE:
+The dashboard is the main working page of IL Quantum.
+
+It handles:
+1. File upload
+2. Folder upload
+3. File parsing
+4. File tracking
+5. Dynamic filters
+6. Dashboard cards
+7. Tables
+8. Charts
+9. Insights
+10. Custom chart builder
+11. Export
+12. Settings
+13. Theme customization
+14. Compact parsing popup
+15. Animated icons
+
+KEY BLOCKS:
+BLOCK 05 - DASHBOARD HEADER CSS
+BLOCK 06 - FILE WIDGET CSS
+BLOCK 07 - DASHBOARD CONTROLS / FILTER CSS
+BLOCK 08 - DASHBOARD GRID / TABLE / CHART CSS
+BLOCK 10 - THEMES / RESPONSIVE CSS
+BLOCK 13 - DASHBOARD HTML
+BLOCK 19 - FILE UPLOAD / PARSER JS
+BLOCK 20 - FILE WIDGET JS
+BLOCK 21 - FILTERS JS
+BLOCK 22 - DASHBOARD RENDER / CHARTS JS
+BLOCK 23 - CUSTOM CHART BUILDER JS
+BLOCK 24 - EXPORT JS
+BLOCK 25 - SETTINGS JS
+BLOCK 26 - UTILITY JS
+BLOCK 27 - APP INITIALIZATION JS
+
+============================================================
+6. DASHBOARD HEADER / MENU STRUCTURE
+============================================================
+
+CURRENT DASHBOARD MENU STRUCTURE:
+
+[ICICI Lombard / IL Quantum Brand Area]
+Home
+Folder
+Files
+Refresh
+Export
+View
+Clear
+Files
+Settings
+
+CURRENT BRAND AREA:
+ICICI Lombard
+IL Quantum
+
+MENU ITEMS AND FUNCTIONS:
+
+1. Home
+Icon: 🏠
+Function: goToHome()
+Purpose: Return to homepage.
+
+2. Folder
+Icon: 📁
+Function:
+document.getElementById('folderInput').click()
+Purpose: Upload folder.
+
+3. Files
+Icon: 📄
+Function:
+document.getElementById('fileInput').click()
+Purpose: Upload selected files.
+
+4. Refresh
+Icon: 🔄
+Function:
+renderAll()
+Purpose: Refresh all dashboard sections.
+
+5. Export
+Icon: 📤
+Function:
+toggleExportMiniPanel()
+Purpose: Opens export options.
+
+6. View
+Icon: 🔀
+Function:
+toggleAllSectionViews()
+Purpose: Toggles all dashboard sections between table and chart view.
+
+7. Clear
+Icon: 🧹
+Function:
+clearAllFilters()
+Purpose: Clears all selected dashboard filters.
+
+8. Files
+Icon: 🗂️
+Function:
+toggleFilePanel()
+Purpose: Opens uploaded files panel.
+
+9. Settings
+Icon: ⚙️
+Function:
+openSettingsPanel()
+Purpose: Opens dashboard settings modal.
+
+HEADER DESIGN:
+- Orange-red corporate gradient menu bar.
+- Left-side brand area.
+- White menu icons and labels.
+- Compact icon-button layout.
+- Smooth hover animations.
+- No blank white space above menu.
+- Dashboard title wrapper is hidden because the brand is integrated into the menu.
+
+IMPORTANT:
+The dashboard top gap issue was fixed in V12_3 by removing unnecessary top padding in BLOCK 05 and responsive top padding in BLOCK 10.
+
+============================================================
+7. DASHBOARD UI THEME
+============================================================
+
+CURRENT UI STYLE:
+Polished corporate dashboard style.
+
+PRIMARY COLORS:
+Official Blue: #053C6D
+Official Red: #97281D
+Header Orange: #f47b20
+Header Deep Red: #c92b12
+Table Header Blue: #003b70
+Section Accent Orange: #f47b20
+Dashboard Background: #ffffff
+Soft Grey: #f4f6f8
+
+TYPOGRAPHY:
+Main font:
+Segoe UI
+
+Brand font:
+Mulish / Segoe UI
+
+Dashboard table font:
+Default dashboard font size controlled by --base-font-size.
+
+VISUAL CHARACTERISTICS:
+- Orange-red dashboard menu.
+- White content background.
+- White section cards.
+- Thin borders.
+- Blue table headers.
+- Maroon/red section titles.
+- Orange separator accents.
+- Subtle box shadows.
+- Compact but modern enterprise dashboard layout.
+- Icon animations on hover.
+
+============================================================
+8. DASHBOARD ICON ANIMATIONS
+============================================================
+
+V12_3 includes CSS-only icon animations.
+
+CURRENT ICON ANIMATIONS:
+1. Dashboard menu icons
+2. Chart action icons
+3. Future-ready sidebar icon classes
+4. Future-ready notification icon classes
+5. Future-ready user profile icon classes
+
+DASHBOARD MENU ICON ANIMATION:
+On hover:
+- Button lifts upward.
+- Icon scales slightly.
+- Icon rotates slightly.
+- Subtle shine sweep passes across button.
+- Soft box shadow appears.
+
+CHART ACTION ICON ANIMATION:
+On hover:
+- Icon lifts upward.
+- Icon scales.
+- Background changes to orange.
+- Shine sweep appears.
+
+FUTURE-READY CLASSES:
+
+Sidebar icons:
+.sidebar-icon
+.sidebar-menu-icon
+.side-nav-icon
+
+Notification icons:
+.notification-icon
+.notify-icon
+.alert-icon
+.has-alert
+
+User profile icons:
+.user-profile-icon
+.profile-icon
+.avatar-icon
+
+If these classes are added in future HTML, animation will work automatically.
+
+============================================================
+9. FILE UPLOAD SYSTEM
+============================================================
+
+SUPPORTED FILE TYPES:
+.csv
+.xlsx
+.xls
+
+UPLOAD OPTIONS:
+1. Folder upload through Folder button.
+2. Multi-file upload through Files button.
+
+FILE INPUTS:
+fileInput
+folderInput
+
+FOLDER INPUT ATTRIBUTES:
+multiple
+webkitdirectory
+directory
+
+IMPORTANT GLOBAL VARIABLES:
+uploadedFiles = []
+fileQueue = []
+isProcessing = false
+currentFileMeta = null
+combinedData = []
+filteredData = []
+uniqueColumns = []
+
+UPLOAD FLOW:
+1. User selects files or folder.
+2. handleFileUpload(files) runs.
+3. File panel opens automatically.
+4. File panel opens in compact mode.
+5. Each file is validated.
+6. Valid file metadata is created.
+7. File is added to uploadedFiles.
+8. File is added to fileQueue.
+9. processFiles() starts.
+10. CSV or Excel parser runs.
+11. Data is normalized.
+12. Rows are appended to combinedData.
+13. Dashboard is rendered.
+
+VALIDATIONS:
+1. File type must be csv, xlsx, or xls.
+2. File size must be within CONFIG.MAX_FILE_SIZE_MB.
+3. Total uploaded files must not exceed CONFIG.MAX_FILE_COUNT.
+
+============================================================
+10. COMPACT FILE PARSING POPUP
+============================================================
+
+CURRENT V12_3 BEHAVIOR:
+When files or folder are selected, the uploaded files popup opens automatically in compact mode.
+
+INITIAL COMPACT VIEW SHOWS ONLY:
+File Name
+Progress Percentage Bar
+
+EXAMPLE:
+Claim_Data_May.xlsx     72%
+
+COMPACT VIEW HIDES:
+Status icon
+Status text
+File size
+Row count
+Remove icon
+
+EXPANDED VIEW SHOWS:
+Status icon
+File name
+Status
+File size
+Row count
+Progress bar
+Remove button
+
+AUTO-CLOSE:
+If all files process successfully, file popup auto-closes after 3 seconds.
+
+IF FILE HAS ISSUE:
+If any file is Error or Empty, file popup remains open for review.
+
+KEY BLOCKS:
+BLOCK 06 - FILE WIDGET CSS
+BLOCK 19 - FILE UPLOAD / PARSER JS
+BLOCK 20 - FILE WIDGET JS
+
+============================================================
+11. FILE WIDGET FUNCTIONS
+============================================================
+
+toggleFilePanel()
+Purpose:
+Opens or closes uploaded files popup.
+
+toggleFilePanelSize()
+Purpose:
+Toggles compact and expanded view.
+
+toggleFilePanelBody()
+Purpose:
+Collapses or expands file list body.
+
+updateFilePanel()
+Purpose:
+Rebuilds complete uploaded file panel HTML.
+Displays:
+- File count
+- File status
+- File name
+- File size
+- Row count
+- Progress bar
+- Remove button
+- Expand/collapse controls
+
+removeUploadedFile(fileId)
+Purpose:
+Removes selected file from:
+- uploadedFiles
+- combinedData
+- fileQueue
+
+Then it:
+- Rebuilds uniqueColumns
+- Refreshes dashboard
+- Updates file panel
+- Shows success toast
+
+============================================================
+12. FILE PARSER FUNCTIONS
+============================================================
+
+handleFileUpload(files)
+Purpose:
+Handles selected files/folders.
+
+Steps:
+1. Checks if files exist.
+2. Opens file popup.
+3. Adds compact class to file popup.
+4. Removes collapsed class.
+5. Validates file count.
+6. Validates file extension.
+7. Validates file size.
+8. Creates file metadata.
+9. Adds metadata to uploadedFiles.
+10. Adds file to fileQueue.
+11. Calls updateFilePanel().
+12. Starts processFiles() if not already processing.
+
+processFiles()
+Purpose:
+Processes files one by one from fileQueue.
+
+Steps:
+1. If queue is empty:
+   - Stop processing.
+   - Reset current file.
+   - Update progress.
+   - Update file panel.
+   - Render dashboard.
+   - Auto-close popup if no issues.
+   - Show final toast.
+2. If queue has file:
+   - Pick next file.
+   - Set currentFileMeta.
+   - Mark as Processing.
+   - Update progress.
+   - Parse CSV or Excel.
+
+parseCSV(file, fileMeta)
+Purpose:
+Reads and parses CSV file.
+
+Uses:
+PapaParse if available.
+Fallback parser if PapaParse is unavailable.
+
+Steps:
+1. Reads CSV using FileReader.
+2. Parses rows.
+3. Handles empty file.
+4. Normalizes rows.
+5. Appends data.
+6. Marks file uploaded.
+7. Runs stable progress processing.
+8. Continues next file.
+
+parseExcel(file, fileMeta)
+Purpose:
+Reads and parses Excel files.
+
+Uses:
+XLSX library.
+
+Steps:
+1. Reads workbook.
+2. Loops through all sheets.
+3. Converts each sheet to JSON.
+4. Adds __sheetName.
+5. Handles empty file.
+6. Normalizes rows.
+7. Appends data.
+8. Marks file uploaded.
+9. Runs stable progress processing.
+10. Continues next file.
+
+runStableProcessingProgress(rows, callback)
+Purpose:
+Runs chunk-based progress simulation from 70% to 100%.
+
+Uses:
+CONFIG.TABLE_RENDER_CHUNK
+CONFIG.TABLE_RENDER_DELAY
+
+updateProgress(p)
+Purpose:
+Updates hidden parser progress and current file progress.
+
+fallbackCSVParse(text)
+Purpose:
+Basic CSV parser if PapaParse is unavailable.
+
+normalizeRows(rows, fileMeta)
+Purpose:
+Normalizes all column names and adds file metadata.
+
+Added metadata columns:
+__fileId
+__fileName
+__fileType
+__fileSize
+__monthYear
+
+appendData(rows)
+Purpose:
+Adds normalized rows to combinedData and rebuilds uniqueColumns.
+
+validateRequiredColumns()
+Purpose:
+Checks missing required columns if CONFIG.REQUIRED_COLUMNS is configured.
+
+============================================================
+13. FILTER SYSTEM
+============================================================
+
+PURPOSE:
+Filters are dynamically generated from uploaded data.
+
+PREFERRED FILTER COLUMNS:
+hosp_city
+mapped_city
+relation_group
+type_of_claim
+updated_status
+age_band
+disease_category
+ipd_opd
+si_band
+__monthYear
+
+KEY FUNCTIONS:
+
+renderFilters()
+Purpose:
+Creates filter buttons and checkbox dropdowns based on available data.
+
+clearAllFilters()
+Purpose:
+Clears all selected filters and rerenders dashboard.
+
+getFilteredData()
+Purpose:
+Returns rows matching selected filters.
+
+FILTER BEHAVIOR:
+- Filters are created only for columns present in uploaded data.
+- Each filter supports checkbox-style multi-select.
+- Filter menus close when another filter opens.
+- Global filters affect all dashboard sections.
+
+============================================================
+14. DASHBOARD SECTION CONFIGURATION
+============================================================
+
+Dashboard sections are configured in SECTION_CONFIGS inside BLOCK 17.
+
+CURRENT SECTIONS:
+
+1. Enrollment – Age Band
+2. Claim Summary (IPD / OPD)
+3. Relation Wise Claims
+4. Sum Insured Band
+5. Age Wise Claims
+6. Top Cities
+7. Disease Category
+8. Claim Amount Band
+9. TAT (Turn Around Time)
+10. Utilization
+
+Each section config includes:
+id
+title
+dimensionAliases
+valueAliases
+chartType
+tableColumns
+
+SECTION PURPOSE:
+Each dashboard section tries to find matching columns from uploaded data based on aliases.
+If required dimension column is not found, it shows:
+Required dimension column not detected
+
+============================================================
+15. DASHBOARD RENDER FUNCTIONS
+============================================================
+
+renderAfterDataChange()
+Purpose:
+Runs after uploaded data changes.
+
+Sequence:
+1. renderFilters()
+2. populateCustomBuilder()
+3. renderAll()
+
+renderAll()
+Purpose:
+Updates filteredData and renders all dashboard sections.
+
+renderSections()
+Purpose:
+Builds all dashboard cards dynamically from SECTION_CONFIGS.
+
+Each card includes:
+- Section title
+- Chart action tools
+- Table container
+- Chart container
+- Insights box
+
+buildSectionSummary(sec, data)
+Purpose:
+Summarizes uploaded data for a section.
+
+Calculates:
+- Count
+- Amount
+- Average claim size
+- Share percentage
+- Chart labels
+- Chart values
+- Table rows
+
+renderSectionTable(sec, summary)
+Purpose:
+Creates HTML table for the section.
+
+renderSectionChart(sec, summary)
+Purpose:
+Creates Chart.js chart.
+
+renderSectionInsights(sec, summary)
+Purpose:
+Creates insight text below each section.
+
+toggleSectionView(id)
+Purpose:
+Switches one section between table and chart.
+
+applySectionVisibility(id)
+Purpose:
+Applies actual display/hide state for table/chart.
+
+toggleAllSectionViews()
+Purpose:
+Switches all sections to chart view or table view.
+
+cycleSectionChartType(id)
+Purpose:
+Cycles one section through available chart types.
+
+exportSectionCSV(id)
+Purpose:
+Exports selected section table data as CSV.
+
+downloadSectionChart(id)
+Purpose:
+Downloads selected chart as PNG.
+
+============================================================
+16. CHART SYSTEM
+============================================================
+
+LIBRARY:
+Chart.js
+
+SUPPORTED CHART TYPES:
+bar
+horizontalBar
+line
+area
+steppedLine
+pie
+doughnut
+polarArea
+radar
+
+DEFAULT SECTION VIEW:
+Table
+
+USER CAN:
+- Toggle a section to chart.
+- Toggle all sections to chart.
+- Cycle chart type.
+- Export section table CSV.
+- Download section chart image.
+
+CHART COLORS:
+Controlled by CONFIG.CHART_COLORS and settings panel.
+
+============================================================
+17. CUSTOM CHART BUILDER
+============================================================
+
+PURPOSE:
+Allows user to build a manual chart from uploaded data.
+
+UI ELEMENTS:
+customChartType
+customX
+customY
+customGroup
+customTopN
+Render Custom Chart button
+
+SUPPORTED CHART TYPES:
+Bar
+Horizontal Bar
+Pie
+Line
+Doughnut
+
+FUNCTIONS:
+
+populateCustomBuilder()
+Purpose:
+Populates X, Y and group dropdowns from uniqueColumns.
+
+renderCustomChart()
+Purpose:
+Creates chart using selected X and Y columns.
+
+BEHAVIOR:
+- Requires X and Y column.
+- Groups data by X column.
+- Sums numeric Y values.
+- Sorts descending.
+- Applies Top N limit.
+- Renders chart using Chart.js.
+
+============================================================
+18. EXPORT SYSTEM
+============================================================
+
+EXPORT MENU:
+The Export menu opens a mini-panel.
+
+EXPORT OPTIONS:
+CSV - Graph
+CSV - Table
+CSV - Raw Data
+PPT - Graph
+PPT - Table
+PDF - Graph
+PDF - Table
+
+FUNCTIONS:
+
+toggleExportMiniPanel()
+Purpose:
+Opens or closes export mini panel.
+
+closeExportMiniPanel()
+Purpose:
+Closes export panel.
+
+handleExportOption(format, type)
+Purpose:
+Routes export option to correct function.
+
+exportCSV()
+Purpose:
+Exports current filtered raw dataset as CSV.
+
+exportGraphCSV()
+Purpose:
+Exports graph summary data for all sections.
+
+exportTableCSV()
+Purpose:
+Exports all section table summaries.
+
+exportPPT(type)
+Purpose:
+Exports graph/table dashboard sections to PPT.
+
+exportPDF(type)
+Purpose:
+Exports graph/table dashboard sections to PDF.
+
+downloadBlob(content, name, type)
+Purpose:
+Creates downloadable file from generated content.
+
+LAZY LOADED LIBRARIES:
+jsPDF is loaded only when PDF export is used.
+pptxgenjs is loaded only when PPT export is used.
+
+FUNCTIONS:
+ensurePDFLibrary()
+ensurePPTXLibrary()
+
+============================================================
+19. SETTINGS PANEL
+============================================================
+
+PURPOSE:
+Allows user to customize dashboard display and processing behavior.
+
+OPENED BY:
+Settings menu item.
+
+SETTINGS AVAILABLE:
+1. Theme Preset
+2. Color Scheme
+3. Dark Mode
+4. Official Blue HEX
+5. Official Red HEX
+6. Font Size
+7. Default Top N
+8. Max File Count
+9. Max File Size MB
+10. Table Chunk Size
+11. Parser Delay MS
+12. Chart Colors HEX Comma Separated
+
+THEME PRESETS:
+Official White Theme
+Pure White
+Soft Grey
+Classic Blue Tint
+
+COLOR SCHEMES:
+Official Corporate
+Deep Blue
+Corporate Maroon
+Neutral Grey
+Teal Professional
+Forest Green
+Royal Purple
+Slate Corporate
+Gold Accent
+Black & Red
+Ocean Blue
+Indigo Focus
+Copper Warm
+Emerald Clean
+Custom
+
+SETTINGS FUNCTIONS:
+
+openSettingsPanel()
+Purpose:
+Loads current CONFIG values into modal and opens settings.
+
+closeSettingsPanel()
+Purpose:
+Closes settings modal.
+
+syncHexFromColor(colorId, hexId)
+Purpose:
+Updates HEX input from color picker.
+
+syncColorFromHex(hexId, colorId)
+Purpose:
+Updates color picker from HEX input.
+
+applySchemeToInputs()
+Purpose:
+Applies selected predefined color scheme.
+
+updateFontSizePreview()
+Purpose:
+Updates visible font size value.
+
+updateLivePreview()
+Purpose:
+Updates theme preview panel.
+
+applyThemePreset(v)
+Purpose:
+Applies selected dashboard theme.
+
+applyDarkMode(v)
+Purpose:
+Turns dark mode on/off.
+
+autoApplySettings(shouldRender=true)
+Purpose:
+Applies settings instantly and optionally rerenders dashboard.
+
+resetDefaultSettings()
+Purpose:
+Restores DEFAULT_SETTINGS.
+
+============================================================
+20. TOAST SYSTEM
+============================================================
+
+PURPOSE:
+Shows short user feedback messages.
+
+TOAST TYPES:
+success
+error
+warning
+
+FUNCTION:
+showToast(message, type)
+
+BEHAVIOR:
+- Toast appears at bottom-right.
+- Toast hides automatically after 3000ms.
+
+============================================================
+21. UTILITY FUNCTIONS
+============================================================
+
+findColumn(aliases)
+Purpose:
+Finds matching column from uniqueColumns after normalization.
+
+normalizeColumn(col)
+Purpose:
+Converts column names to lowercase underscore format.
+
+Example:
+Claim Amount becomes claim_amount
+
+prettify(col)
+Purpose:
+Converts normalized column into readable title.
+
+Example:
+claim_amount becomes Claim Amount
+
+getExtension(name)
+Purpose:
+Returns file extension.
+
+formatSize(bytes)
+Purpose:
+Formats bytes into B, KB, or MB.
+
+toNumber(v)
+Purpose:
+Converts values with commas, ₹, or % into number.
+
+formatNumber(n)
+Purpose:
+Formats number in Indian numeric style.
+
+formatCurrency(n)
+Purpose:
+Formats amount in Indian numeric style with no decimals.
+
+showToast(message, type)
+Purpose:
+Shows toast notification.
+
+extractMonthYear(filename)
+Purpose:
+Attempts to detect month and year from file name.
+
+============================================================
+22. INITIALIZATION FLOW
+============================================================
+
+BLOCK 27 runs initial setup.
+
+STEPS:
+1. updateFilePanel()
+2. applyThemePreset(CONFIG.THEME_PRESET)
+3. applyDarkMode(CONFIG.DARK_MODE)
+4. Set official blue CSS variable.
+5. Set official red CSS variable.
+6. Set dashboard title blue.
+7. Set dashboard tagline red.
+8. Set base font size.
+
+PURPOSE:
+Ensures dashboard configuration and file panel are initialized when page loads.
+
+============================================================
+23. BLOCK-BY-BLOCK MAP
+============================================================
+
+BLOCK 00:
+Document setup, meta tags, title, external libraries.
+
+BLOCK 01:
+Global CSS variables, body styling, buttons, inputs, selects.
+
+BLOCK 02:
+Shared brand title, tagline, home/settings icon CSS.
+
+BLOCK 03:
+Homepage and door-opening animation CSS.
+
+BLOCK 04:
+Navigation page and role-card CSS.
+
+BLOCK 05:
+Dashboard shell, dashboard spacing, hidden title strip.
+
+BLOCK 06:
+File widget, uploaded files panel, compact parsing popup.
+
+BLOCK 07:
+Dashboard menu, brand area, filters, export mini panel, icon animations, future-ready sidebar/notification/profile animations.
+
+BLOCK 08:
+Dashboard grid, tables, section cards, chart boxes, insights, chart action animations.
+
+BLOCK 09:
+Settings modal, theme preview, toast CSS.
+
+BLOCK 10:
+Theme variants, dark mode, responsive behavior, top gap fix.
+
+BLOCK 11:
+Homepage HTML.
+
+BLOCK 12:
+Navigation role-card HTML.
+
+BLOCK 13:
+Dashboard HTML including menu, inputs, filters, sections, custom chart builder.
+
+BLOCK 14:
+Legacy export modal HTML.
+
+BLOCK 15:
+Settings modal HTML.
+
+BLOCK 16:
+Toast HTML.
+
+BLOCK 17:
+Global variables, default settings, color schemes, config, section configs.
+
+BLOCK 18:
+Page navigation JavaScript.
+
+BLOCK 19:
+File upload, parser, queue processing.
+
+BLOCK 20:
+Uploaded files panel JavaScript.
+
+BLOCK 21:
+Filters JavaScript.
+
+BLOCK 22:
+Dashboard rendering and chart JavaScript.
+
+BLOCK 23:
+Custom chart builder JavaScript.
+
+BLOCK 24:
+Export JavaScript.
+
+BLOCK 25:
+Settings JavaScript.
+
+BLOCK 26:
+Utility JavaScript.
+
+BLOCK 27:
+Application initialization JavaScript.
+
+============================================================
+24. SAFE MODIFICATION RULES
+============================================================
+
+HOMEPAGE CHANGES:
+Modify BLOCK 03 and BLOCK 11 only.
+
+NAVIGATION PAGE CHANGES:
+Modify BLOCK 04 and BLOCK 12.
+Modify BLOCK 18 only if navigation logic changes.
+
+DASHBOARD MENU CHANGES:
+Modify BLOCK 07 and BLOCK 13.
+
+FILE POPUP UI CHANGES:
+Modify BLOCK 06.
+Modify BLOCK 20 if structure changes.
+Modify BLOCK 19 only if auto-open or parser behavior changes.
+
+PARSER LOGIC CHANGES:
+Modify BLOCK 19 carefully.
+
+FILTER CHANGES:
+Modify BLOCK 21.
+
+DASHBOARD SECTION CHANGES:
+Modify BLOCK 17 SECTION_CONFIGS and BLOCK 22.
+
+CUSTOM CHART CHANGES:
+Modify BLOCK 23.
+
+EXPORT CHANGES:
+Modify BLOCK 24.
+
+SETTINGS CHANGES:
+Modify BLOCK 15, BLOCK 25, and BLOCK 09 if styling is needed.
+
+THEME CHANGES:
+Modify BLOCK 01, BLOCK 05, BLOCK 07, BLOCK 08, and BLOCK 10.
+
+ICON ANIMATION CHANGES:
+Modify BLOCK 07 and BLOCK 08.
+
+============================================================
+25. CURRENT LOCKED FEATURES IN V12_3
+============================================================
+
+The current locked baseline includes:
+
+1. Homepage with door-opening animation.
+2. Role navigation page.
+3. Business Team dashboard access.
+4. Locked placeholder paths for other roles.
+5. Dashboard orange-red menu.
+6. Brand area: ICICI Lombard / IL Quantum.
+7. Settings icon inside dashboard menu.
+8. Uploaded Files icon inside dashboard menu.
+9. Compact file parsing popup.
+10. File progress percentage display.
+11. Expandable uploaded files panel.
+12. Auto-close uploaded files panel after successful processing.
+13. CSV / XLS / XLSX upload support.
+14. Folder upload support.
+15. Dynamic filter generation.
+16. Dashboard tables.
+17. Dashboard charts.
+18. Chart type cycling.
+19. Table/chart toggle.
+20. Global view toggle.
+21. Section CSV export.
+22. Chart PNG download.
+23. Custom chart builder.
+24. CSV raw export.
+25. CSV graph export.
+26. CSV table export.
+27. PPT export.
+28. PDF export.
+29. Lazy-loaded PDF and PPT libraries.
+30. Settings modal.
+31. Theme presets.
+32. Color scheme controls.
+33. Dark mode.
+34. Font size control.
+35. Top N control.
+36. File count control.
+37. File size control.
+38. Parser chunk size control.
+39. Parser delay control.
+40. Chart colors control.
+41. Dashboard menu icon animations.
+42. Chart action icon animations.
+43. Future-ready sidebar icon animations.
+44. Future-ready notification icon animations.
+45. Future-ready user profile icon animations.
+46. Dashboard top blank gap fixed.
+
+============================================================
+26. FUTURE REBUILD PROMPT
+============================================================
+
+Use this prompt if the portal needs to be recreated in the future:
+
+Build a single-page HTML, CSS, and JavaScript application named "IL Quantum" matching the locked baseline "IL_Quantum_Portal V12_3".
+
+The application must include three pages:
+1. Homepage with blue gradient background and door-opening animation.
+2. Role navigation page with four role cards: Business Team, Relationship Manager, Corporate Client, Admin.
+3. Main dashboard page with orange-red corporate top menu, left brand area "ICICI Lombard / IL Quantum", and menu items: Home, Folder, Files, Refresh, Export, View, Clear, Files, Settings.
+
+Use client-side HTML/CSS/JavaScript only.
+Use Chart.js, PapaParse, and XLSX from CDN.
+Lazy-load jsPDF and pptxgenjs only when export is requested.
+
+Preserve all dashboard features:
+- Upload multiple CSV/XLS/XLSX files.
+- Upload folders using webkitdirectory.
+- Validate file type.
+- Validate file size.
+- Queue files and parse one by one.
+- Show uploaded file popup in compact mode initially.
+- Compact popup must show only file name and progress percentage.
+- Allow expand and reduce of uploaded files panel.
+- Auto-close uploaded files panel after successful processing.
+- Keep remove file capability.
+- Normalize all column names.
+- Add metadata columns: __fileId, __fileName, __fileType, __fileSize, __monthYear.
+- Dynamically create filters from preferred columns.
+- Render dashboard sections from SECTION_CONFIGS.
+- Render tables and Chart.js charts.
+- Allow chart type cycling.
+- Allow global table/chart toggle.
+- Allow custom chart builder.
+- Export raw CSV, graph CSV, table CSV, PPT graph/table, PDF graph/table.
+- Provide settings modal for theme, color scheme, dark mode, font size, Top N, max file count, max file size, chunk size, parser delay, and chart colors.
+
+UI theme:
+- Homepage uses blue gradient and glass-style centered brand card.
+- Navigation uses white shell with four cards.
+- Dashboard uses white background, orange-red top menu, blue table headers, maroon section titles, orange accents, subtle card borders, compact corporate layout.
+- Dashboard top menu icons and chart action icons must have smooth hover animations.
+- Include future-ready CSS animation classes for sidebar icons, notification icons, and user profile icons.
+- The old centered dashboard title strip must be hidden.
+- Brand must be integrated inside dashboard top menu.
+- There must be no blank white gap above dashboard menu while scrolling.
+
+Preserve block-based organization from BLOCK 00 to BLOCK 27.
+Document each block clearly.
+Do not remove existing functionality unless explicitly requested.
+
+============================================================
+27. FINAL LOCKED BASELINE STATEMENT
+============================================================
+
+IL_Quantum_Portal V12_3 is the current active locked baseline.
+
+All future modifications must be applied over IL_Quantum_Portal V12_3.
+
+Existing functionality must not be removed unless explicitly requested.
+
+For any future update:
+1. Identify impacted block numbers.
+2. Replace only necessary blocks.
+3. Preserve homepage, navigation, parser, file popup, filters, charts, export, settings, and animations unless the user requests changes.
+4. Keep code block comments and version notes updated.
+============================================================
+END OF IL_QUANTUM_PORTAL V12_3 MASTER DOCUMENTATION
+============================================================
+```

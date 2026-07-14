@@ -1,0 +1,3507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- =====================================================
+BLOCK 00 START - DOCUMENT SETUP / LIBRARIES
+Purpose: HTML start, meta tags, title, fonts and external libraries
+CHANGE IN V11_7: Removed invalid jsDelivr scripts and kept heavy PDF/PPT libraries lazy-loaded through export logic.
+===================================================== -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IL Quantum</title>
+
+<!-- External Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com">
+
+<!-- Core External Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<!-- =====================================================
+BLOCK 00 END - DOCUMENT SETUP / LIBRARIES
+===================================================== -->
+</head>
+
+<style>
+/* =====================================================
+BLOCK 01 START - GLOBAL CSS / ROOT THEME
+Purpose: Root colors, body, buttons, inputs, base font
+===================================================== */
+:root{
+--primary:#007bff;
+--primary-dark:#004a99;
+--bg1:#4facfe;
+--bg2:#00f2fe;
+--text:#1f2937;
+--muted:#6b7280;
+--success:#16a34a;
+--danger:#dc2626;
+--warning:#f59e0b;
+--shadow:0 8px 24px rgba(0,0,0,.14);
+--radius:14px;
+--official-blue:#053C6D;
+--official-red:#97281D;
+--official-white:#ffffff;
+--dashboard-tagline-red:#97281D;
+--base-font-size:13px;
+--corp-card:#ffffff;
+--corp-border:rgba(5,60,109,.10);
+--corp-shadow:0 6px 18px rgba(5,60,109,.08);
+--corp-soft:#f7f9fc;
+}
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:'Mulish',sans-serif;
+background:linear-gradient(135deg,var(--bg1),var(--bg2));
+color:var(--text);
+font-size:var(--base-font-size)
+}
+
+button{
+padding:6px 10px;
+background:var(--primary);
+color:#fff;
+border:none;
+border-radius:7px;
+cursor:pointer;
+transition:.2s;
+font-weight:600;
+font-size:var(--base-font-size)
+}
+
+button:hover{transform:translateY(-1px)}
+button.secondary{background:#475569}
+button.danger{background:var(--danger)}
+
+select,input[type="number"],input[type="text"],input[type="color"],input[type="range"]{
+padding:5px 7px;
+border:1px solid #cbd5e1;
+border-radius:7px;
+width:100%;
+font-size:var(--base-font-size)
+}
+/* =====================================================
+BLOCK 01 END - GLOBAL CSS / ROOT THEME
+===================================================== */
+
+/* =====================================================
+BLOCK 02 START - SHARED BRAND / HEADER / ICON CSS
+Purpose: Brand title, tagline, Home icon, Settings icon
+===================================================== */
+.brand-title,.dashboard-title{
+font-family:'Mulish','Mulish',sans-serif;
+font-weight:800;
+color:var(--official-blue);
+letter-spacing:.25px
+}
+
+.brand-title{
+font-size:32px;
+line-height:1.05
+}
+
+.brand-tagline,.dashboard-tagline{
+font-family:'Mulish','Mulish',sans-serif;
+font-weight:700;
+color:var(--dashboard-tagline-red);
+white-space:nowrap
+}
+
+.brand-tagline{
+font-size:14px;
+margin-top:3px
+}
+
+.home-icon-btn,.settings-icon-btn{
+position:fixed;
+top:10px;
+width:38px;
+height:38px;
+border-radius:50%;
+background:var(--official-blue);
+color:#fff;
+border:none;
+z-index:5000;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:18px;
+box-shadow:none
+}
+
+.home-icon-btn{left:10px}
+.settings-icon-btn{left:55px}
+/* =====================================================
+BLOCK 02 END - SHARED BRAND / HEADER / ICON CSS
+===================================================== */
+
+/* =====================================================
+BLOCK 03 START - HOMEPAGE CSS / DOOR OPENING ANIMATION
+Purpose: First page, title/subtitle shape, door animation
+VERY SENSITIVE - do not change unless homepage change is required
+===================================================== */
+#homePage{
+min-height:100vh;
+width:100%;
+position:relative;
+overflow:hidden;
+background:linear-gradient(135deg,var(--bg1),var(--bg2));
+cursor:pointer
+}
+
+.door-stage{
+position:absolute;
+inset:0;
+display:flex;
+overflow:hidden
+}
+
+.door{
+width:50%;
+height:100%;
+display:flex;
+align-items:center;
+justify-content:center;
+transition:transform 1.2s ease-in-out;
+background:linear-gradient(135deg,var(--bg1),var(--bg2));
+z-index:5
+}
+
+.door-left{border-right:1px solid rgba(255,255,255,.25)}
+.door-right{border-left:1px solid rgba(255,255,255,.25)}
+
+.door-title{
+display:none
+}
+
+#homePage.door-open .door-left{transform:translateX(-100%)}
+#homePage.door-open .door-right{transform:translateX(100%)}
+
+.entry-overlay{
+position:absolute;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:10;
+pointer-events:auto
+}
+
+.home-brand-shape{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+min-width:430px;
+padding:26px 34px 24px;
+border-radius:22px;
+text-align:center;
+background:rgba(255,255,255,.14);
+border:1px solid rgba(255,255,255,.38);
+box-shadow:0 12px 32px rgba(2,43,79,.16);
+backdrop-filter:blur(8px);
+-webkit-backdrop-filter:blur(8px);
+transition:transform 1.2s ease-in-out,opacity .95s ease-in-out
+}
+
+.home-main-title{
+font-family:'Mulish','Mulish',sans-serif;
+font-size:56px;
+font-weight:800;
+line-height:1;
+color:#ffffff;
+letter-spacing:.25px;
+white-space:nowrap;
+text-shadow:0 6px 20px rgba(0,0,0,.18)
+}
+
+.home-subtitle{
+font-family:'Mulish','Mulish',sans-serif;
+font-size:16px;
+font-weight:800;
+line-height:1.25;
+color:#ffffff;
+letter-spacing:.22px;
+white-space:nowrap;
+text-align:center;
+text-shadow:0 5px 16px rgba(2,43,79,.28);
+margin-top:12px
+}
+
+.home-subtitle:after{
+content:"";
+display:block;
+width:82px;
+height:2px;
+margin:8px auto 0;
+border-radius:999px;
+background:linear-gradient(90deg,#ffffff,var(--official-red),#ffffff);
+box-shadow:0 3px 10px rgba(151,40,29,.22)
+}
+
+#homePage.door-open .home-brand-shape{
+transform:translate(-50%,-64%) scale(.96);
+opacity:0
+}
+
+.entry-card,
+.login-btn{
+display:none
+}
+/* =====================================================
+BLOCK 03 END - HOMEPAGE CSS / DOOR OPENING ANIMATION
+===================================================== */
+
+/* =====================================================
+BLOCK 04 START - NAVIGATION CSS / USER ROLE CARDS
+Purpose: Business Team, RM, Corporate, Admin role cards
+Safe to change only for role-card alignment/spacing
+===================================================== */
+#mainNavigation{
+display:none;
+min-height:100vh;
+padding:70px 20px;
+background:linear-gradient(135deg,var(--bg1),var(--bg2))
+}
+
+.nav-shell{
+max-width:980px;
+margin:auto;
+background:rgba(255,255,255,.94);
+border-radius:22px;
+box-shadow:var(--shadow);
+padding:32px;
+text-align:center
+}
+
+.nav-shell .brand-title{font-size:34px}
+.nav-shell .brand-tagline{margin:6px 0 28px}
+
+.nav-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:18px
+}
+
+.nav-card{
+background:white;
+border-radius:16px;
+box-shadow:0 6px 18px rgba(0,0,0,.10);
+padding:26px 14px;
+cursor:pointer;
+transition:.25s;
+border:1px solid rgba(0,123,255,.14);
+min-height:178px
+}
+
+.nav-card:hover{
+transform:translateY(-4px);
+box-shadow:0 10px 24px rgba(0,0,0,.16)
+}
+
+.nav-icon{font-size:34px;margin-bottom:10px}
+.nav-title{font-size:17px;font-weight:700;color:var(--primary-dark)}
+
+.nav-subtitle{
+font-size:12px;
+line-height:1.35;
+color:#475569;
+margin-top:8px;
+font-weight:600
+}
+/* =====================================================
+BLOCK 04 END - NAVIGATION CSS / USER ROLE CARDS
+===================================================== */
+
+/* =====================================================
+BLOCK 05 START - DASHBOARD HEADER CSS
+Purpose: Dashboard shell, fixed title and tagline
+CHANGE IN V12_2: Removed extra top padding gap after dashboard title moved into menu bar.
+===================================================== */
+#dashboardApp{
+display:none;
+background:#ffffff;
+min-height:100vh;
+padding-top:0;
+color:var(--official-blue)
+}
+
+/* Existing title wrapper retained in HTML for safety, but hidden visually.
+   Brand/title now appears inside the top menu bar. */
+.dashboard-title-wrap{
+display:none
+}
+
+.dashboard-title{
+font-size:26px;
+outline:none;
+letter-spacing:.28px;
+color:#ffffff;
+font-weight:800
+}
+
+.dashboard-tagline{
+font-size:12px;
+margin-top:2px;
+letter-spacing:.12px;
+color:#ffffff;
+opacity:.96
+}
+
+.dashboard-title-wrap:after{
+display:none
+}
+
+.header{display:none}
+/* =====================================================
+BLOCK 05 END - DASHBOARD HEADER CSS
+===================================================== */
+
+/* =====================================================
+BLOCK 06 START - FILE WIDGET CSS
+Purpose: Files button, uploaded file dropdown, progress rows
+CHANGE IN V12: Compact auto-popup view shows only file name and progress percentage initially; full details available through expand arrow.
+===================================================== */
+.file-widget{
+position:fixed;
+right:8px;
+top:8px;
+z-index:5001
+}
+
+.file-widget-btn{
+background:var(--official-blue);
+color:#fff;
+border-radius:999px;
+padding:7px 13px;
+min-width:auto;
+width:auto;
+height:auto;
+box-shadow:0 5px 12px rgba(5,60,109,.18)
+}
+
+.file-dropdown{
+display:none;
+position:absolute;
+right:0;
+top:38px;
+width:610px;
+max-width:calc(100vw - 16px);
+max-height:320px;
+overflow:auto;
+background:#fff;
+border:1px solid rgba(5,60,109,.14);
+border-radius:10px;
+box-shadow:0 12px 24px rgba(5,60,109,.13);
+padding:7px
+}
+
+.file-dropdown.active{display:block}
+
+.file-dropdown.compact{
+width:360px;
+max-height:220px
+}
+
+.file-panel-header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:6px;
+padding:4px 6px 7px;
+border-bottom:1px solid #e5e7eb;
+font-size:12px;
+font-weight:800;
+color:var(--official-blue)
+}
+
+.file-panel-actions{
+display:flex;
+gap:4px;
+align-items:center
+}
+
+.file-panel-arrow{
+width:22px;
+height:22px;
+padding:0;
+border-radius:50%;
+background:var(--official-blue);
+color:#fff;
+font-size:11px;
+line-height:22px;
+display:flex;
+align-items:center;
+justify-content:center
+}
+
+.file-panel-footer{
+display:flex;
+justify-content:center;
+padding:6px 0 1px;
+border-top:1px solid #e5e7eb;
+margin-top:4px
+}
+
+.file-panel-bottom-arrow{
+width:28px;
+height:22px;
+padding:0;
+border-radius:999px;
+background:var(--official-blue);
+color:#fff;
+font-size:11px;
+display:flex;
+align-items:center;
+justify-content:center
+}
+
+.file-dropdown.body-collapsed{
+max-height:74px;
+overflow:hidden
+}
+
+.file-dropdown.body-collapsed .file-list-body{
+display:none
+}
+
+.file-line{
+display:grid;
+grid-template-columns:24px 1.5fr .75fr .75fr .75fr 82px 24px;
+align-items:center;
+gap:6px;
+padding:6px;
+border-bottom:1px solid #e5e7eb;
+font-size:11.5px;
+white-space:nowrap
+}
+
+/* Compact auto-popup view:
+   Shows only file name and progress percentage bar */
+.file-dropdown.compact .file-line{
+grid-template-columns:minmax(0,1fr) 96px;
+gap:8px;
+font-size:11px;
+padding:6px 5px
+}
+
+/* Hide status icon, status text, file size, row count, and remove icon in compact view */
+.file-dropdown.compact .file-line > div:nth-child(1),
+.file-dropdown.compact .file-line > div:nth-child(3),
+.file-dropdown.compact .file-line > div:nth-child(4),
+.file-dropdown.compact .file-line > div:nth-child(5),
+.file-dropdown.compact .file-line > button{
+display:none
+}
+
+/* File name becomes first visible compact column */
+.file-dropdown.compact .file-line > div:nth-child(2){
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap
+}
+
+/* Progress bar stays visible as second compact column */
+.file-dropdown.compact .file-progress{
+height:13px
+}
+
+.file-dropdown.compact .file-progress span{
+font-size:9px;
+line-height:13px
+}
+
+.file-progress{
+height:14px;
+background:#e5e7eb;
+border-radius:999px;
+overflow:hidden;
+position:relative
+}
+
+.file-progress-fill{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,var(--official-blue),var(--official-red));
+border-radius:999px;
+transition:width .35s ease
+}
+
+.file-progress span{
+position:absolute;
+inset:0;
+text-align:center;
+font-size:9.5px;
+color:#fff;
+font-weight:700;
+line-height:14px
+}
+
+.file-remove{
+background:var(--official-red)!important;
+border-radius:50%;
+width:20px;
+height:20px;
+padding:0;
+display:flex;
+align-items:center;
+justify-content:center
+}
+
+.file-status-symbol{
+font-size:14px;
+text-align:center
+}
+/* =====================================================
+BLOCK 06 END - FILE WIDGET CSS
+===================================================== */
+
+/* =====================================================
+BLOCK 07 START - DASHBOARD CONTROLS / FILTER CSS
+Purpose: Import buttons, export data button, filters
+CHANGE IN V12_1: Dashboard top menu includes brand area and animated menu/sidebar/notification/profile icon framework.
+===================================================== */
+.controls-card{
+width:100%;
+margin:0 auto 18px;
+background:linear-gradient(180deg,#f47b20 0%,#c92b12 100%);
+border:none;
+border-radius:0;
+box-shadow:0 4px 10px rgba(80,20,5,.20);
+padding:7px 28px;
+position:sticky;
+top:0;
+z-index:2400
+}
+
+.control-row{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+align-items:center;
+justify-content:center
+}
+
+.button-row{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+position:relative;
+align-items:center;
+justify-content:center;
+width:100%
+}
+
+/* Left brand area inside top menu */
+.dashboard-menu-brand{
+display:flex;
+flex-direction:column;
+align-items:flex-start;
+justify-content:center;
+min-width:210px;
+height:52px;
+padding:5px 14px 5px 4px;
+margin-right:6px;
+border-right:1px solid rgba(255,255,255,.28);
+color:#ffffff;
+line-height:1.05
+}
+
+.dashboard-menu-brand-main{
+font-family:'Mulish','Mulish',sans-serif;
+font-size:15px;
+font-weight:900;
+letter-spacing:.18px;
+white-space:nowrap
+}
+
+.dashboard-menu-brand-sub{
+font-family:'Mulish','Mulish',sans-serif;
+font-size:10.5px;
+font-weight:800;
+letter-spacing:.12px;
+white-space:nowrap;
+opacity:.96;
+margin-top:3px
+}
+
+.controls-card button{
+border-radius:8px;
+padding:6px 11px;
+font-size:12.5px;
+background:transparent;
+box-shadow:none;
+color:#ffffff;
+border:1px solid rgba(255,255,255,.16)
+}
+
+.controls-card button:hover{
+background:rgba(255,255,255,.14);
+transform:translateY(-1px)
+}
+
+.controls-card button.secondary{
+background:transparent;
+color:#ffffff
+}
+
+.controls-card button.danger{
+background:rgba(151,40,29,.18);
+color:#ffffff;
+border-color:rgba(255,255,255,.22)
+}
+
+.menu-icon-btn{
+min-width:64px;
+height:52px;
+padding:5px 8px!important;
+border-radius:10px!important;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+gap:2px;
+line-height:1.05;
+box-shadow:none;
+font-weight:800
+}
+
+.menu-icon-btn .menu-ico{
+font-size:20px;
+line-height:1
+}
+
+.menu-icon-btn .menu-label{
+font-size:9.8px;
+font-weight:800;
+line-height:1;
+white-space:nowrap;
+color:#ffffff
+}
+
+.export-menu-wrap{
+position:relative;
+display:inline-flex
+}
+
+.export-mini-panel{
+display:none;
+position:absolute;
+top:58px;
+left:50%;
+transform:translateX(-50%);
+width:206px;
+background:#ffffff;
+border:1px solid rgba(0,57,102,.16);
+border-radius:10px;
+box-shadow:0 14px 26px rgba(0,57,102,.18);
+padding:8px;
+z-index:2600
+}
+
+.export-mini-panel.active{
+display:block
+}
+
+.export-mini-title{
+font-size:11px;
+font-weight:800;
+color:#003b70;
+margin:0 0 6px;
+text-align:center;
+border-bottom:2px solid #f47b20;
+padding-bottom:6px
+}
+
+.export-mini-row{
+display:grid;
+grid-template-columns:34px 1fr;
+align-items:center;
+gap:6px;
+margin:6px 0
+}
+
+.export-type-icon{
+font-size:17px;
+text-align:center
+}
+
+.export-action-icons{
+display:flex;
+gap:5px;
+justify-content:flex-start
+}
+
+.export-action-btn{
+width:28px!important;
+height:28px!important;
+min-width:28px!important;
+padding:0!important;
+border-radius:7px!important;
+display:flex!important;
+align-items:center!important;
+justify-content:center!important;
+font-size:14px!important;
+background:#003b70!important;
+color:#fff!important;
+border:none!important
+}
+
+.export-action-btn:hover{
+background:#f47b20!important
+}
+
+.filters-area{
+display:flex;
+flex-wrap:wrap;
+gap:6px;
+margin-top:8px;
+justify-content:center;
+width:100%
+}
+
+.filter-pill{position:relative}
+
+.filter-btn{
+border-radius:999px;
+background:#ffffff;
+color:#003b70;
+border:1px solid rgba(0,57,102,.18);
+padding:5px 11px;
+cursor:pointer;
+font-size:12px;
+box-shadow:none;
+font-weight:800
+}
+
+.filter-btn:hover{
+background:#fff3e8;
+color:#9d1d12
+}
+
+.filter-menu{
+display:none;
+position:absolute;
+top:31px;
+left:0;
+width:230px;
+max-height:240px;
+overflow:auto;
+background:#fff;
+border-radius:8px;
+box-shadow:0 12px 22px rgba(0,57,102,.18);
+padding:8px;
+z-index:2500;
+border:1px solid rgba(0,57,102,.16)
+}
+
+.filter-menu.active{display:block}
+.filter-menu label{display:block;font-size:11.5px;margin:5px 0;color:#1f2937}
+
+/* =====================================================
+Dashboard / Sidebar / Notification / Profile Icon Animations
+Purpose: Soft hover and click animations for dashboard menu, sidebar, notification and user profile icons.
+===================================================== */
+
+/* Dashboard top menu icons */
+.menu-icon-btn{
+position:relative;
+overflow:hidden;
+transition:transform .18s ease, background .18s ease, box-shadow .18s ease
+}
+
+.menu-icon-btn .menu-ico{
+transition:transform .22s ease, filter .22s ease
+}
+
+.menu-icon-btn:hover{
+transform:translateY(-2px);
+background:rgba(255,255,255,.18);
+box-shadow:0 4px 10px rgba(0,0,0,.12)
+}
+
+.menu-icon-btn:hover .menu-ico{
+transform:scale(1.18) rotate(-4deg);
+filter:drop-shadow(0 2px 3px rgba(0,0,0,.18))
+}
+
+.menu-icon-btn:active{
+transform:translateY(0) scale(.97)
+}
+
+.menu-icon-btn::after{
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(120deg,transparent,rgba(255,255,255,.25),transparent);
+transform:translateX(-120%);
+transition:transform .45s ease;
+pointer-events:none
+}
+
+.menu-icon-btn:hover::after{
+transform:translateX(120%)
+}
+
+/* Sidebar icon animation framework - safe for future sidebar */
+.sidebar-icon,
+.sidebar-menu-icon,
+.side-nav-icon{
+position:relative;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+transition:transform .2s ease, background .2s ease, box-shadow .2s ease, color .2s ease
+}
+
+.sidebar-icon:hover,
+.sidebar-menu-icon:hover,
+.side-nav-icon:hover{
+transform:translateX(3px) scale(1.08);
+background:rgba(244,123,32,.12);
+box-shadow:0 3px 8px rgba(0,57,102,.12)
+}
+
+.sidebar-icon:active,
+.sidebar-menu-icon:active,
+.side-nav-icon:active{
+transform:scale(.96)
+}
+
+/* Notification icon animation framework - safe for future notification bell */
+.notification-icon,
+.notify-icon,
+.alert-icon{
+position:relative;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+transition:transform .2s ease, filter .2s ease
+}
+
+.notification-icon:hover,
+.notify-icon:hover,
+.alert-icon:hover{
+animation:notificationBell .65s ease;
+filter:drop-shadow(0 2px 4px rgba(0,0,0,.18))
+}
+
+/* Optional alert dot, only appears when has-alert class is used */
+.notification-icon::after,
+.notify-icon::after,
+.alert-icon::after{
+content:"";
+position:absolute;
+top:3px;
+right:3px;
+width:7px;
+height:7px;
+border-radius:50%;
+background:#f47b20;
+box-shadow:0 0 0 rgba(244,123,32,.5);
+animation:notificationPulse 1.8s infinite;
+display:none
+}
+
+.notification-icon.has-alert::after,
+.notify-icon.has-alert::after,
+.alert-icon.has-alert::after{
+display:block
+}
+
+/* User profile / avatar icon animation framework */
+.user-profile-icon,
+.profile-icon,
+.avatar-icon{
+position:relative;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+transition:transform .2s ease, box-shadow .2s ease, background .2s ease
+}
+
+.user-profile-icon:hover,
+.profile-icon:hover,
+.avatar-icon:hover{
+transform:scale(1.08);
+box-shadow:0 4px 10px rgba(0,57,102,.16);
+background:rgba(255,255,255,.16)
+}
+
+.user-profile-icon:active,
+.profile-icon:active,
+.avatar-icon:active{
+transform:scale(.96)
+}
+
+/* Subtle pulse only for important/danger action */
+.menu-icon-btn.danger:hover .menu-ico{
+animation:menuIconPulse .55s ease
+}
+
+@keyframes menuIconPulse{
+0%{transform:scale(1)}
+50%{transform:scale(1.25)}
+100%{transform:scale(1.18) rotate(-4deg)}
+}
+
+@keyframes notificationBell{
+0%{transform:rotate(0)}
+15%{transform:rotate(-12deg)}
+30%{transform:rotate(10deg)}
+45%{transform:rotate(-8deg)}
+60%{transform:rotate(6deg)}
+75%{transform:rotate(-3deg)}
+100%{transform:rotate(0)}
+}
+
+@keyframes notificationPulse{
+0%{box-shadow:0 0 0 0 rgba(244,123,32,.5)}
+70%{box-shadow:0 0 0 7px rgba(244,123,32,0)}
+100%{box-shadow:0 0 0 0 rgba(244,123,32,0)}
+}
+
+/* Accessibility - disable animations if reduced motion is preferred */
+@media (prefers-reduced-motion: reduce){
+.menu-icon-btn,
+.menu-icon-btn .menu-ico,
+.menu-icon-btn::after,
+.sidebar-icon,
+.sidebar-menu-icon,
+.side-nav-icon,
+.notification-icon,
+.notify-icon,
+.alert-icon,
+.user-profile-icon,
+.profile-icon,
+.avatar-icon{
+transition:none;
+animation:none
+}
+
+.menu-icon-btn:hover,
+.menu-icon-btn:hover .menu-ico,
+.sidebar-icon:hover,
+.sidebar-menu-icon:hover,
+.side-nav-icon:hover,
+.notification-icon:hover,
+.notify-icon:hover,
+.alert-icon:hover,
+.user-profile-icon:hover,
+.profile-icon:hover,
+.avatar-icon:hover{
+transform:none;
+animation:none
+}
+}
+/* =====================================================
+BLOCK 07 END - DASHBOARD CONTROLS / FILTER CSS
+===================================================== */
+
+/* =====================================================
+BLOCK 08 START - DASHBOARD GRID / TABLE / CHART CSS
+Purpose: Section cards, charts, tables, insights
+CHANGE IN V12_1: Dashboard content, cards, tables and chart action icons with soft animation.
+===================================================== */
+.dashboard-grid{
+width:91%;
+margin:14px auto 26px
+}
+
+#dashboardSections{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(370px,1fr));
+gap:14px;
+align-items:start
+}
+
+.section-card{
+background:#ffffff;
+border-radius:2px;
+box-shadow:0 3px 10px rgba(0,57,102,.08);
+border:1px solid #d6dbe1;
+padding:12px;
+margin-bottom:0;
+min-width:0;
+transition:.18s ease
+}
+
+.section-card:hover{
+box-shadow:0 6px 16px rgba(0,57,102,.13)
+}
+
+.section-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:8px;
+margin-bottom:8px;
+padding-bottom:7px;
+border-bottom:2px solid #f47b20
+}
+
+.section-title{
+font-size:15px;
+font-weight:800;
+color:#9d1d12;
+letter-spacing:.08px
+}
+
+.chart-tools{
+display:flex;
+gap:5px;
+align-items:center
+}
+
+.tool-icon{
+width:25px;
+height:25px;
+padding:0;
+border-radius:6px;
+background:#003b70;
+color:#ffffff;
+font-size:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+box-shadow:none
+}
+
+.tool-icon:hover{
+background:#f47b20
+}
+
+.toggle-btn{
+background:#003b70;
+font-size:11px;
+border-radius:999px;
+padding:5px 9px
+}
+
+.table-wrap{
+width:100%;
+overflow:auto;
+max-height:230px;
+border-radius:2px;
+border:1px solid #d6dbe1
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+font-size:12px
+}
+
+th,td{
+padding:6px 7px;
+border:1px solid #d6dbe1;
+text-align:left;
+white-space:nowrap
+}
+
+th{
+background:#003b70;
+color:#fff;
+position:sticky;
+top:0;
+z-index:1;
+font-weight:800
+}
+
+tbody tr:nth-child(even){
+background:#fafafa
+}
+
+tbody tr:hover{
+background:#fff3e8
+}
+
+.chart-box{
+display:none;
+min-height:230px;
+border-radius:2px;
+background:#ffffff;
+padding:7px;
+border:1px solid #d6dbe1
+}
+
+.chart-box canvas{
+width:100%!important;
+height:218px!important
+}
+
+.insights{
+margin-top:8px;
+background:#ffffff;
+padding:8px;
+border-left:4px solid #f47b20;
+border-radius:2px;
+font-size:11.8px;
+border-top:1px solid #d6dbe1;
+border-right:1px solid #d6dbe1;
+border-bottom:1px solid #d6dbe1;
+color:#1f2937
+}
+
+.insights b{
+color:#003b70
+}
+
+.insights ul{
+margin:5px 0 0 15px;
+padding:0
+}
+
+.builder-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:8px;
+margin-bottom:10px
+}
+
+.builder-grid select,
+.builder-grid input{
+border:1px solid #bfc7d1;
+border-radius:4px
+}
+
+/* =====================================================
+Chart Card Icon Animations
+Purpose: Soft animation for chart/table/export action icons
+===================================================== */
+.tool-icon{
+position:relative;
+overflow:hidden;
+transition:transform .18s ease, background .18s ease, box-shadow .18s ease
+}
+
+.tool-icon:hover{
+transform:translateY(-2px) scale(1.08);
+background:#f47b20;
+box-shadow:0 4px 10px rgba(0,57,102,.16)
+}
+
+.tool-icon:active{
+transform:scale(.94)
+}
+
+.tool-icon::after{
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(120deg,transparent,rgba(255,255,255,.3),transparent);
+transform:translateX(-120%);
+transition:transform .4s ease;
+pointer-events:none
+}
+
+.tool-icon:hover::after{
+transform:translateX(120%)
+}
+
+@media (prefers-reduced-motion: reduce){
+.tool-icon,
+.tool-icon::after{
+transition:none;
+animation:none
+}
+
+.tool-icon:hover{
+transform:none
+}
+}
+/* =====================================================
+BLOCK 08 END - DASHBOARD GRID / TABLE / CHART CSS
+===================================================== */
+
+
+/* =====================================================
+BLOCK 09 START - SETTINGS / MODAL / TOAST CSS
+Purpose: Settings popup, export popup, toast notifications
+===================================================== */
+.toast{
+position:fixed;
+bottom:20px;
+right:20px;
+background:#111827;
+color:#fff;
+padding:12px 16px;
+border-radius:10px;
+box-shadow:var(--shadow);
+display:none;
+z-index:5000
+}
+
+.toast.success{background:var(--success)}
+.toast.error{background:var(--danger)}
+.toast.warning{background:var(--warning);color:#111827}
+
+.modal-backdrop{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.45);
+z-index:4000;
+align-items:center;
+justify-content:center
+}
+
+.modal{
+background:#fff;
+width:360px;
+border-radius:14px;
+padding:18px;
+box-shadow:var(--shadow)
+}
+
+.settings-modal{
+width:760px;
+max-width:96vw;
+max-height:92vh;
+overflow-y:auto;
+overflow-x:hidden;
+padding:12px 14px 0
+}
+
+.settings-modal h3{margin:0 0 4px}
+.settings-note{font-size:12px;color:#6b7280;margin:0 0 8px}
+
+.settings-grid{
+display:grid;
+grid-template-columns:1fr 1fr 1.2fr;
+gap:7px 9px;
+margin-top:7px;
+padding-bottom:8px;
+align-items:start
+}
+
+.settings-field label{
+display:block;
+font-size:11px;
+font-weight:700;
+color:var(--official-blue);
+margin-bottom:3px
+}
+
+.help-tip{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+width:15px;
+height:15px;
+border-radius:50%;
+background:var(--official-blue);
+color:white;
+font-size:10px;
+margin-left:4px;
+cursor:help
+}
+
+.settings-full{grid-column:1/3}
+
+.font-size-value{
+font-size:11px;
+color:var(--official-red);
+font-weight:700;
+margin-top:2px
+}
+
+.hex-row{
+display:grid;
+grid-template-columns:42px 1fr;
+gap:6px;
+align-items:center
+}
+
+.theme-preview{
+grid-column:3/4;
+grid-row:1/span 6;
+border:1px solid #d1d5db;
+border-radius:12px;
+padding:9px;
+background:#fff;
+min-height:240px
+}
+
+.theme-preview-card{
+border-radius:10px;
+padding:10px;
+border:1px solid #e5e7eb;
+height:100%
+}
+
+.theme-preview-title{
+font-weight:800;
+margin-bottom:8px
+}
+
+.theme-preview-pill{
+display:inline-block;
+padding:5px 10px;
+border-radius:999px;
+color:#fff;
+font-size:11.5px;
+margin-right:6px;
+margin-bottom:7px
+}
+
+.theme-preview-table{
+width:100%;
+margin-top:8px;
+border-collapse:collapse;
+font-size:11.5px
+}
+
+.theme-preview-table th,.theme-preview-table td{
+padding:5px;
+border:1px solid #ddd
+}
+
+.settings-actions{
+display:flex;
+gap:10px;
+justify-content:flex-end;
+margin-top:7px;
+flex-wrap:wrap;
+position:sticky;
+bottom:0;
+background:#fff;
+padding:9px 0 10px;
+border-top:1px solid #e5e7eb;
+z-index:5
+}
+/* =====================================================
+BLOCK 09 END - SETTINGS / MODAL / TOAST CSS
+===================================================== */
+
+/* =====================================================
+BLOCK 10 START - THEMES / RESPONSIVE CSS
+Purpose: Dashboard themes and mobile/tablet layout
+CHANGE IN V12_2: Removed extra dashboard top gap caused by hidden title strip and sticky menu.
+===================================================== */
+#dashboardApp.theme-official-white{
+background:#ffffff
+}
+
+#dashboardApp.theme-clean-white{
+background:#ffffff
+}
+
+#dashboardApp.theme-soft-grey{
+background:#f4f6f8
+}
+
+#dashboardApp.theme-classic-blue{
+background:#ffffff
+}
+
+#dashboardApp.dark-mode{
+background:#0f172a;
+color:#e5e7eb
+}
+
+#dashboardApp.dark-mode .dashboard-title-wrap,
+#dashboardApp.dark-mode .controls-card{
+background:linear-gradient(180deg,#c2410c 0%,#7f1d1d 100%)
+}
+
+#dashboardApp.dark-mode .section-card{
+background:rgba(15,23,42,.94);
+color:#e5e7eb;
+border-color:#334155
+}
+
+#dashboardApp.dark-mode table{
+background:#111827;
+color:#e5e7eb
+}
+
+#dashboardApp.dark-mode th{
+background:#003b70;
+color:#ffffff
+}
+
+#dashboardApp.dark-mode td{
+border-color:#334155
+}
+
+#dashboardApp.dark-mode .insights{
+background:#111827;
+color:#e5e7eb;
+border-color:#334155;
+border-left-color:#f47b20
+}
+
+#dashboardApp.dark-mode .file-dropdown{
+background:#111827;
+color:#e5e7eb;
+border-color:#334155
+}
+
+#dashboardApp.dark-mode .chart-box{
+background:#111827;
+border-color:#334155
+}
+
+#dashboardApp .home-icon-btn,
+#dashboardApp .settings-icon-btn{
+background:#003b70;
+color:#fff;
+box-shadow:none
+}
+
+#dashboardApp .settings-icon-btn{
+top:8px;
+left:10px
+}
+
+#dashboardApp button.danger{
+background:rgba(151,40,29,.18)
+}
+
+#dashboardApp .progress-fill{
+background:#f47b20
+}
+
+@media(max-width:900px){
+.nav-grid{grid-template-columns:repeat(2,1fr)}
+#dashboardSections{grid-template-columns:1fr}
+.settings-grid{grid-template-columns:1fr 1fr}
+.theme-preview{grid-column:1/-1;grid-row:auto}
+.settings-full{grid-column:1/-1}
+.dashboard-grid{width:94%}
+.controls-card{padding:7px 14px}
+}
+
+@media(max-width:768px){
+.parser-box{position:static;width:95%;margin:8px auto}
+.control-row{flex-direction:column;align-items:center}
+.button-row{justify-content:center}
+.nav-grid{grid-template-columns:1fr}
+
+/* Removed old top padding because title strip is hidden */
+#dashboardApp{
+padding-top:0
+}
+
+.dashboard-title-wrap{
+display:none
+}
+
+.controls-card{
+top:0;
+padding:7px 8px
+}
+
+.settings-grid{grid-template-columns:1fr}
+.settings-full,.theme-preview{grid-column:auto}
+.file-dropdown{width:calc(100vw - 16px)}
+.file-line{grid-template-columns:22px 1fr 60px 55px 60px 72px 22px;font-size:10.8px}
+
+.home-brand-shape{
+min-width:0;
+width:92%;
+padding:22px 18px 20px
+}
+
+.home-main-title{
+font-size:42px
+}
+
+.home-subtitle{
+font-size:13px;
+white-space:normal
+}
+
+.menu-icon-btn{
+min-width:58px;
+height:50px
+}
+}
+/* =====================================================
+BLOCK 10 END - THEMES / RESPONSIVE CSS
+===================================================== */
+</style>
+</head>
+
+<body>
+<!-- =====================================================
+BLOCK 11 START - HOMEPAGE HTML
+Purpose: First page with door opening animation
+===================================================== -->
+<div id="homePage" onclick="internalLogin()">
+    <div class="door-stage">
+        <div class="door door-left"><div class="door-title">IL</div></div>
+        <div class="door door-right"><div class="door-title">Quantum</div></div>
+    </div>
+
+    <div class="entry-overlay">
+        <div class="home-brand-shape">
+            <div class="home-main-title">IL Quantum</div>
+            <div class="home-subtitle">A Unified Data Hub for Intelligent Decisions</div>
+        </div>
+    </div>
+</div>
+<!-- =====================================================
+BLOCK 11 END - HOMEPAGE HTML
+===================================================== -->
+
+<!-- =====================================================
+BLOCK 12 START - NAVIGATION HTML / USER ROLE LIST
+Purpose: Role selection page after door animation
+===================================================== -->
+<div id="mainNavigation">
+    <button class="home-icon-btn" onclick="goToHome()" title="Home">🏠</button>
+    <div class="nav-shell">
+        <div class="brand-title">IL Quantum</div>
+        <div class="brand-tagline">A Unified Data Hub for Intelligent Decisions</div>
+        <div class="nav-grid">
+            <div class="nav-card" onclick="openInternalEmp()">
+                <div class="nav-icon">👤</div>
+                <div class="nav-title">Business Team</div>
+                <div class="nav-subtitle">Access to consolidated reports across all policies.</div>
+            </div>
+            <div class="nav-card" onclick="lockedPath('External Emp')">
+                <div class="nav-icon">🌐</div>
+                <div class="nav-title">Relationship Manager</div>
+                <div class="nav-subtitle">Access restricted to policies mapped to their assigned clients.</div>
+            </div>
+            <div class="nav-card" onclick="lockedPath('Corporates')">
+                <div class="nav-icon">🏢</div>
+                <div class="nav-title">Corporate Client</div>
+                <div class="nav-subtitle">Access limited to their issued policies.</div>
+            </div>
+            <div class="nav-card" onclick="lockedPath('Admin')">
+                <div class="nav-icon">⚙️</div>
+                <div class="nav-title">Admin</div>
+                <div class="nav-subtitle">Responsible for system administration, development, and enhancement activities.</div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- =====================================================
+BLOCK 12 END - NAVIGATION HTML / USER ROLE LIST
+===================================================== -->
+
+<!-- =====================================================
+BLOCK 13 START - DASHBOARD HTML
+Purpose: Main dashboard page, file upload, filters, chart sections
+CHANGE IN V12: Top dashboard menu aligned as Brand Area + Home + Folder + Files + Refresh + Export + View + Clear + Files + Settings.
+===================================================== -->
+<div id="dashboardApp" class="theme-classic-blue">
+
+    <div class="dashboard-title-wrap">
+        <div class="dashboard-title" contenteditable="true">IL Quantum</div>
+        <div class="dashboard-tagline">A Unified Data Hub for Intelligent Decisions</div>
+    </div>
+
+    <div class="file-widget">
+        <div class="file-dropdown" id="fileDropdown"></div>
+    </div>
+    <span id="fileCount" style="display:none;">0</span>
+
+    <div class="parser-box" style="display:none;">
+        <div class="parser-line">
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <span id="percent">0%</span><span id="statusIcon">⏳</span>
+        </div>
+        <div id="fileName"></div>
+    </div>
+
+    <div class="controls-card">
+        <div class="control-row">
+            <div class="button-row">
+
+                <div class="dashboard-menu-brand" title="ICICI Lombard / IL Quantum">
+                    <div class="dashboard-menu-brand-main">ICICI Lombard</div>
+                    <div class="dashboard-menu-brand-sub">IL Quantum</div>
+                </div>
+
+                <button class="menu-icon-btn secondary" onclick="goToHome()" title="Home">
+                    <span class="menu-ico">🏠</span>
+                    <span class="menu-label">Home</span>
+                </button>
+
+                <button class="menu-icon-btn" onclick="document.getElementById('folderInput').click()" title="Import Folder">
+                    <span class="menu-ico">📁</span>
+                    <span class="menu-label">Folder</span>
+                </button>
+
+                <button class="menu-icon-btn" onclick="document.getElementById('fileInput').click()" title="Import Files">
+                    <span class="menu-ico">📄</span>
+                    <span class="menu-label">Files</span>
+                </button>
+
+                <button class="menu-icon-btn" onclick="renderAll()" title="Refresh Charts">
+                    <span class="menu-ico">🔄</span>
+                    <span class="menu-label">Refresh</span>
+                </button>
+
+                <div class="export-menu-wrap">
+                    <button class="menu-icon-btn secondary" onclick="toggleExportMiniPanel()" title="Export Data">
+                        <span class="menu-ico">📤</span>
+                        <span class="menu-label">Export</span>
+                    </button>
+
+                    <div class="export-mini-panel" id="exportMiniPanel">
+                        <div class="export-mini-title">Export Options</div>
+
+                        <div class="export-mini-row">
+                            <div class="export-type-icon" title="CSV">🧾</div>
+                            <div class="export-action-icons">
+                                <button class="export-action-btn" onclick="handleExportOption('csv','graph')" title="CSV - Graph">📈</button>
+                                <button class="export-action-btn" onclick="handleExportOption('csv','table')" title="CSV - Table">📋</button>
+                                <button class="export-action-btn" onclick="handleExportOption('csv','raw')" title="CSV - Raw Data">🗃️</button>
+                            </div>
+                        </div>
+
+                        <div class="export-mini-row">
+                            <div class="export-type-icon" title="PPT">📽️</div>
+                            <div class="export-action-icons">
+                                <button class="export-action-btn" onclick="handleExportOption('ppt','graph')" title="PPT - Graph">📈</button>
+                                <button class="export-action-btn" onclick="handleExportOption('ppt','table')" title="PPT - Table">📋</button>
+                            </div>
+                        </div>
+
+                        <div class="export-mini-row">
+                            <div class="export-type-icon" title="PDF">📕</div>
+                            <div class="export-action-icons">
+                                <button class="export-action-btn" onclick="handleExportOption('pdf','graph')" title="PDF - Graph">📈</button>
+                                <button class="export-action-btn" onclick="handleExportOption('pdf','table')" title="PDF - Table">📋</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="menu-icon-btn secondary" onclick="toggleAllSectionViews()" title="Change Graph / Table">
+                    <span class="menu-ico">🔀</span>
+                    <span class="menu-label">View</span>
+                </button>
+
+                <button class="menu-icon-btn danger" onclick="clearAllFilters()" title="Clear All Filters">
+                    <span class="menu-ico">🧹</span>
+                    <span class="menu-label">Clear</span>
+                </button>
+
+                <button class="menu-icon-btn secondary" onclick="toggleFilePanel()" title="Uploaded Files">
+                    <span class="menu-ico">🗂️</span>
+                    <span class="menu-label">Files</span>
+                </button>
+
+                <button class="menu-icon-btn secondary" onclick="openSettingsPanel()" title="Settings">
+                    <span class="menu-ico">⚙️</span>
+                    <span class="menu-label">Settings</span>
+                </button>
+            </div>
+        </div>
+
+        <input type="file" id="fileInput" multiple accept=".csv,.xlsx,.xls" style="display:none">
+        <input type="file" id="folderInput" multiple webkitdirectory directory accept=".csv,.xlsx,.xls" style="display:none">
+        <div class="filters-area" id="filtersArea"></div>
+    </div>
+
+    <div class="dashboard-grid" id="dashboardSections"></div>
+
+    <div class="dashboard-grid">
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-title">Custom Chart Builder</div>
+                <button onclick="renderCustomChart()">Render Custom Chart</button>
+            </div>
+            <div class="builder-grid">
+                <select id="customChartType">
+                    <option value="bar">Bar</option>
+                    <option value="horizontalBar">Horizontal Bar</option>
+                    <option value="pie">Pie</option>
+                    <option value="line">Line</option>
+                    <option value="doughnut">Doughnut</option>
+                </select>
+                <select id="customX"></select>
+                <select id="customY"></select>
+                <select id="customGroup"></select>
+                <input type="number" id="customTopN" value="10" min="1" max="50">
+            </div>
+            <div class="chart-box" style="display:block;">
+                <canvas id="customChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- =====================================================
+BLOCK 13 END - DASHBOARD HTML
+===================================================== -->
+<!-- =====================================================
+BLOCK 14 START - EXPORT MODAL HTML
+Purpose: CSV export popup
+===================================================== -->
+<div class="modal-backdrop" id="exportModal">
+    <div class="modal">
+        <h3>Export Data</h3>
+        <p>Export current filtered dataset as CSV.</p>
+        <button onclick="exportCSV()">Download CSV</button>
+        <button class="secondary" onclick="closeExportModal()">Close</button>
+    </div>
+</div>
+<!-- =====================================================
+BLOCK 14 END - EXPORT MODAL HTML
+===================================================== -->
+
+<!-- =====================================================
+BLOCK 15 START - SETTINGS MODAL HTML
+Purpose: Dashboard settings popup
+===================================================== -->
+<div class="modal-backdrop" id="settingsModal">
+    <div class="modal settings-modal">
+        <h3>Dashboard Settings</h3>
+        <p class="settings-note">Customize dashboard display. Changes apply instantly.</p>
+
+        <div class="settings-grid">
+            <div class="settings-field">
+                <label>Theme Preset <span class="help-tip" title="Changes dashboard background theme instantly.">?</span></label>
+                <select id="settingThemePreset" onchange="autoApplySettings()">
+                    <option value="official-white">Official White Theme</option>
+                    <option value="clean-white">Pure White</option>
+                    <option value="soft-grey">Soft Grey</option>
+                    <option value="classic-blue">Classic Blue Tint</option>
+                </select>
+            </div>
+
+            <div class="settings-field">
+                <label>Color Scheme <span class="help-tip" title="Applies predefined blue/red and chart colors instantly.">?</span></label>
+                <select id="settingColorScheme" onchange="applySchemeToInputs();autoApplySettings();">
+                    <option value="official">Official Corporate</option>
+                    <option value="deepBlue">Deep Blue</option>
+                    <option value="maroon">Corporate Maroon</option>
+                    <option value="neutral">Neutral Grey</option>
+                    <option value="teal">Teal Professional</option>
+                    <option value="forest">Forest Green</option>
+                    <option value="royal">Royal Purple</option>
+                    <option value="slate">Slate Corporate</option>
+                    <option value="gold">Gold Accent</option>
+                    <option value="blackRed">Black &amp; Red</option>
+                    <option value="ocean">Ocean Blue</option>
+                    <option value="indigo">Indigo Focus</option>
+                    <option value="copper">Copper Warm</option>
+                    <option value="emerald">Emerald Clean</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+
+            <div class="theme-preview">
+                <div class="theme-preview-card" id="themePreviewCard">
+                    <div class="theme-preview-title" id="themePreviewTitle">Live Preview</div>
+                    <span class="theme-preview-pill" id="themePreviewPillBlue">Menu</span>
+                    <span class="theme-preview-pill" id="themePreviewPillRed">Accent</span>
+                    <table class="theme-preview-table">
+                        <thead>
+                            <tr>
+                                <th id="themePreviewTh">Header</th>
+                                <th id="themePreviewTh2">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Sample</td>
+                                <td>123</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="settings-field">
+                <label>Dark Mode <span class="help-tip" title="Switches dashboard to dark viewing mode instantly.">?</span></label>
+                <select id="settingDarkMode" onchange="autoApplySettings(false)">
+                    <option value="off">Off</option>
+                    <option value="on">On</option>
+                </select>
+            </div>
+
+            <div class="settings-field">
+                <label>Official Blue HEX <span class="help-tip" title="Main dashboard blue color.">?</span></label>
+                <div class="hex-row">
+                    <input type="color" id="settingOfficialBlue" value="#053C6D" oninput="syncHexFromColor('settingOfficialBlue','settingOfficialBlueHex');autoApplySettings();">
+                    <input type="text" id="settingOfficialBlueHex" value="#053C6D" oninput="syncColorFromHex('settingOfficialBlueHex','settingOfficialBlue');autoApplySettings();">
+                </div>
+            </div>
+
+            <div class="settings-field">
+                <label>Official Red HEX <span class="help-tip" title="Accent color for buttons and progress.">?</span></label>
+                <div class="hex-row">
+                    <input type="color" id="settingOfficialRed" value="#97281D" oninput="syncHexFromColor('settingOfficialRed','settingOfficialRedHex');autoApplySettings();">
+                    <input type="text" id="settingOfficialRedHex" value="#97281D" oninput="syncColorFromHex('settingOfficialRedHex','settingOfficialRed');autoApplySettings();">
+                </div>
+            </div>
+
+            <div class="settings-field">
+                <label>Font Size <span class="help-tip" title="Adjust dashboard font size.">?</span></label>
+                <input type="range" id="settingFontSize" min="11" max="20" value="14" oninput="updateFontSizePreview();autoApplySettings();">
+                <div class="font-size-value">Current: <span id="fontSizePreview">14</span>px</div>
+            </div>
+
+            <div class="settings-field">
+                <label>Default Top N <span class="help-tip" title="Top records shown in summaries.">?</span></label>
+                <input type="number" id="settingTopN" min="1" max="50" value="10" oninput="autoApplySettings();">
+            </div>
+
+            <div class="settings-field">
+                <label>Max File Count <span class="help-tip" title="Maximum files allowed.">?</span></label>
+                <input type="number" id="settingMaxFiles" min="1" max="100" value="25" oninput="autoApplySettings(false);">
+            </div>
+
+            <div class="settings-field">
+                <label>Max File Size MB <span class="help-tip" title="Maximum file size.">?</span></label>
+                <input type="number" id="settingMaxFileSize" min="1" max="500" value="50" oninput="autoApplySettings(false);">
+            </div>
+
+            <div class="settings-field">
+                <label>Table Chunk Size <span class="help-tip" title="Parser chunk rhythm.">?</span></label>
+                <input type="number" id="settingChunkSize" min="10" max="1000" value="100" oninput="autoApplySettings(false);">
+            </div>
+
+            <div class="settings-field">
+                <label>Parser Delay MS <span class="help-tip" title="Delay between parser chunks.">?</span></label>
+                <input type="number" id="settingParserDelay" min="0" max="1000" value="10" oninput="autoApplySettings(false);">
+            </div>
+
+            <div class="settings-field settings-full">
+                <label>Chart Colors HEX Comma Separated <span class="help-tip" title="HEX list used by charts.">?</span></label>
+                <input type="text" id="settingChartColors" value="#053C6D,#97281D,#6b7280,#16a34a,#f59e0b" oninput="autoApplySettings();">
+            </div>
+        </div>
+
+        <div class="settings-actions">
+            <button onclick="resetDefaultSettings()">Reset to Default Settings</button>
+            <button class="secondary" onclick="closeSettingsPanel()">Close</button>
+        </div>
+    </div>
+</div>
+<!-- =====================================================
+BLOCK 15 END - SETTINGS MODAL HTML
+===================================================== -->
+
+<!-- =====================================================
+BLOCK 16 START - TOAST HTML
+Purpose: Toast success/error/warning message
+===================================================== -->
+<div class="toast" id="toast"></div>
+<!-- =====================================================
+BLOCK 16 END - TOAST HTML
+===================================================== -->
+
+<script>
+// =====================================================
+// BLOCK 17 START - GLOBAL VARIABLES / CONFIG
+// Purpose: App variables, default settings, color schemes, section configs
+// =====================================================
+let internalLoggedIn=false;
+let uploadedFiles=[],fileQueue=[],isProcessing=false,currentFileMeta=null;
+let combinedData=[],filteredData=[],uniqueColumns=[],globalFilters={},chartInstances={},sectionViewState={},customChartInstance=null,sectionSummaries={};
+
+const DEFAULT_SETTINGS={
+THEME_PRESET:"classic-blue",
+COLOR_SCHEME:"official",
+DARK_MODE:"off",
+OFFICIAL_BLUE:"#053C6D",
+OFFICIAL_RED:"#97281D",
+FONT_SIZE:14,
+DEFAULT_TOP_N:10,
+MAX_FILE_COUNT:25,
+MAX_FILE_SIZE_MB:50,
+TABLE_RENDER_CHUNK:100,
+TABLE_RENDER_DELAY:10,
+CHART_COLORS:["#053C6D","#97281D","#6b7280","#16a34a","#f59e0b"]
+};
+
+const COLOR_SCHEMES={
+official:{blue:"#053C6D",red:"#97281D",colors:["#053C6D","#97281D","#6b7280","#16a34a","#f59e0b","#ef4444","#8b5cf6","#ec4899","#0f766e","#475569"]},
+deepBlue:{blue:"#022B4F",red:"#0B5CAD",colors:["#022B4F","#0B5CAD","#6b7280","#16a34a","#f59e0b"]},
+maroon:{blue:"#5B1A14",red:"#97281D",colors:["#5B1A14","#97281D","#C2410C","#6b7280","#16a34a"]},
+neutral:{blue:"#374151",red:"#6B7280",colors:["#374151","#6B7280","#9CA3AF","#111827","#16a34a"]},
+teal:{blue:"#0F766E",red:"#14B8A6",colors:["#0F766E","#14B8A6","#64748B","#16a34a","#f59e0b"]},
+forest:{blue:"#14532D",red:"#22C55E",colors:["#14532D","#22C55E","#64748B","#84CC16","#f59e0b"]},
+royal:{blue:"#4C1D95",red:"#7C3AED",colors:["#4C1D95","#7C3AED","#6b7280","#EC4899","#f59e0b"]},
+slate:{blue:"#0F172A",red:"#334155",colors:["#0F172A","#334155","#64748B","#94A3B8","#16a34a"]},
+gold:{blue:"#78350F",red:"#D97706",colors:["#78350F","#D97706","#92400E","#F59E0B","#16a34a"]},
+blackRed:{blue:"#111827",red:"#DC2626",colors:["#111827","#DC2626","#6B7280","#EF4444","#16a34a"]},
+ocean:{blue:"#075985",red:"#0284C7",colors:["#075985","#0284C7","#38BDF8","#64748B","#16a34a"]},
+indigo:{blue:"#312E81",red:"#4F46E5",colors:["#312E81","#4F46E5","#818CF8","#6B7280","#16a34a"]},
+copper:{blue:"#7C2D12",red:"#EA580C",colors:["#7C2D12","#EA580C","#FDBA74","#6B7280","#16a34a"]},
+emerald:{blue:"#064E3B",red:"#10B981",colors:["#064E3B","#10B981","#6EE7B7","#64748B","#f59e0b"]}
+};
+
+const CONFIG={
+MAX_FILE_COUNT:25,
+MAX_FILE_SIZE_MB:50,
+REQUIRED_COLUMNS:[],
+DEFAULT_TOP_N:10,
+CHART_COLORS:[...DEFAULT_SETTINGS.CHART_COLORS],
+FILTER_COLUMN_LIMIT:8,
+TABLE_RENDER_CHUNK:100,
+TABLE_RENDER_DELAY:10,
+THEME_PRESET:"classic-blue",
+COLOR_SCHEME:"official",
+DARK_MODE:"off",
+FONT_SIZE:14
+};
+
+const SECTION_CONFIGS=[
+{id:"enrollmentAge",title:"Enrollment – Age Band",dimensionAliases:["age_band","Age Band","AgeBand"],valueAliases:["inception_lives","earned_lives","Count","Total Count","Overall"],chartType:"bar",tableColumns:["Age Band","Total Count","Percentage (%)]"].map(x=>x.replace('%)]','%)'))},
+{id:"claimSummary",title:"Claim Summary (IPD / OPD)",dimensionAliases:["updated_status","Status","claim_status"],valueAliases:["net_sanct_amt","claim_r_os_amt","Amount","Claim Amount","Value"],chartType:"pie",tableColumns:["Status","Claim Count","Claim Amount","% Share"]},
+{id:"relationClaims",title:"Relation Wise Claims",dimensionAliases:["relation_group","Relation","relationship"],valueAliases:["net_sanct_amt","Amount","Claim Amount"],chartType:"bar",tableColumns:["Relation","Claim Count","Total Amount","ACS"]},
+{id:"siBand",title:"Sum Insured Band",dimensionAliases:["si_band","Sum Insured Band","SI Band"],valueAliases:["net_sanct_amt","Amount","Claim Amount"],chartType:"bar",tableColumns:["Sum Insured Band","Claim Count","Amount","ACS"]},
+{id:"ageClaims",title:"Age Wise Claims",dimensionAliases:["age_band","Age Band"],valueAliases:["net_sanct_amt","Amount","Claim Amount"],chartType:"bar",tableColumns:["Age Band","Claim Count","Amount","ACS"]},
+{id:"topCities",title:"Top Cities",dimensionAliases:["hosp_city","mapped_city","City","Top Cities"],valueAliases:["net_sanct_amt","Amount","Claim Amount"],chartType:"horizontalBar",tableColumns:["City","Claim Count","Amount","ACS"]},
+{id:"disease",title:"Disease Category",dimensionAliases:["disease_category","Disease Category"],valueAliases:["net_sanct_amt","Amount","Claim Amount"],chartType:"pie",tableColumns:["Disease Category","Claim Count","Amount","% Share"]},
+{id:"amountBand",title:"Claim Amount Band",dimensionAliases:["net_sanct_amt_band","Amount Band","Claim Amount Band"],valueAliases:["net_sanct_amt","Amount","Claim Amount"],chartType:"bar",tableColumns:["Amount Band","Claim Count","Amount","ACS"]},
+{id:"tat",title:"TAT (Turn Around Time)",dimensionAliases:["monthly_intimation","Month","payment_date","inward_date","__monthYear"],valueAliases:["tat","TAT","Percentage","%"],chartType:"bar",tableColumns:["Month","Average TAT","Claim Count"]},
+{id:"utilization",title:"Utilization",dimensionAliases:["incidence_count","Claim Frequency","No. of Claims"],valueAliases:["net_sanct_amt","Amount","Claim Amount"],chartType:"pie",tableColumns:["Claim Frequency","Count","Amount","Percentage (%)"]}
+];
+// =====================================================
+// BLOCK 17 END - GLOBAL VARIABLES / CONFIG
+// =====================================================
+
+// =====================================================
+// BLOCK 18 START - PAGE NAVIGATION JS
+// Purpose: Door animation, home, navigation, role access
+// =====================================================
+function internalLogin(){
+internalLoggedIn=true;
+homePage.classList.add("door-open");
+setTimeout(()=>{
+homePage.style.display="none";
+mainNavigation.style.display="block";
+},1200);
+}
+
+function goToHome(){
+dashboardApp.style.display="none";
+mainNavigation.style.display="none";
+homePage.style.display="block";
+homePage.classList.remove("door-open");
+internalLoggedIn=false;
+}
+
+function openInternalEmp(){
+if(!internalLoggedIn){
+showToast("Please login Internal before access","warning");
+return;
+}
+mainNavigation.style.display="none";
+dashboardApp.style.display="block";
+}
+
+function lockedPath(pathName){
+showToast(pathName+" path is available after required access configuration","warning");
+}
+// =====================================================
+// BLOCK 18 END - PAGE NAVIGATION JS
+// =====================================================
+
+// =====================================================
+// BLOCK 19 START - FILE UPLOAD / PARSER JS
+// Purpose: Import folder/files, parse CSV/Excel, upload progress
+// CHANGE IN V12: File popup auto-opens in compact clean view showing file name and progress percentage initially.
+// =====================================================
+fileInput.addEventListener("change",e=>handleFileUpload(Array.from(e.target.files)));
+folderInput.addEventListener("change",e=>handleFileUpload(Array.from(e.target.files)));
+
+function handleFileUpload(files){
+if(!files||!files.length)return;
+
+/* Auto-open existing Files pop-up in compact clean view.
+   Initial view shows only file name and progress percentage.
+   User can expand using existing arrow button. */
+if(fileDropdown){
+fileDropdown.classList.add("active");
+fileDropdown.classList.add("compact");
+fileDropdown.classList.remove("body-collapsed");
+}
+
+if(uploadedFiles.length+files.length>CONFIG.MAX_FILE_COUNT){
+showToast("File count limit exceeded","error");
+return;
+}
+
+files.forEach(file=>{
+const ext=getExtension(file.name);
+
+if(!["csv","xlsx","xls"].includes(ext)){
+showToast("Wrong file format skipped: "+file.name,"warning");
+return;
+}
+
+if(file.size>CONFIG.MAX_FILE_SIZE_MB*1024*1024){
+showToast("File too large skipped: "+file.name,"warning");
+return;
+}
+
+/* Show all selected files immediately before parsing starts */
+const fileMeta={
+id:"f_"+Date.now()+"_"+Math.random().toString(36).slice(2),
+name:file.name,
+type:ext,
+size:formatSize(file.size),
+rawSize:file.size,
+status:"Queued",
+monthYear:extractMonthYear(file.name),
+rowCount:0,
+progress:0
+};
+
+uploadedFiles.push(fileMeta);
+fileQueue.push({file:file,fileMeta:fileMeta});
+});
+
+updateFilePanel();
+
+if(!isProcessing)processFiles();
+}
+
+function processFiles(){
+if(!fileQueue.length){
+isProcessing=false;
+currentFileMeta=null;
+updateProgress(100);
+updateFilePanel();
+renderAfterDataChange();
+
+/* Auto-close Files pop-up after 3 seconds only if all files uploaded successfully */
+const hasIssue=uploadedFiles.some(f=>f.status==="Error"||f.status==="Empty");
+
+if(fileDropdown && !hasIssue){
+setTimeout(()=>{
+fileDropdown.classList.remove("active");
+},3000);
+}
+
+showToast(hasIssue ? "Files processed with issues. Please review." : "All files processed","success");
+return;
+}
+
+isProcessing=true;
+
+const queueItem=fileQueue.shift();
+const file=queueItem.file||queueItem;
+const ext=getExtension(file.name);
+
+let fileMeta=queueItem.fileMeta;
+
+if(!fileMeta){
+fileMeta={
+id:"f_"+Date.now()+"_"+Math.random().toString(36).slice(2),
+name:file.name,
+type:ext,
+size:formatSize(file.size),
+rawSize:file.size,
+status:"Processing",
+monthYear:extractMonthYear(file.name),
+rowCount:0,
+progress:1
+};
+uploadedFiles.push(fileMeta);
+}
+
+fileMeta.status="Processing";
+fileMeta.progress=Math.max(fileMeta.progress||0,1);
+
+currentFileMeta=fileMeta;
+
+updateProgress(1);
+updateFilePanel();
+
+if(ext==="csv")parseCSV(file,fileMeta);
+else parseExcel(file,fileMeta);
+}
+
+function parseCSV(file,fileMeta){
+updateProgress(5);
+const reader=new FileReader();
+
+reader.onprogress=e=>{
+if(e.lengthComputable)updateProgress(Math.max(5,Math.floor((e.loaded/e.total)*45)));
+};
+
+reader.onload=e=>{
+updateProgress(50);
+try{
+let parsedRows=[];
+
+if(window.Papa){
+const result=Papa.parse(e.target.result,{header:true,skipEmptyLines:true});
+parsedRows=result.data||[];
+if(result.errors&&result.errors.length)showToast("CSV parsed with warnings: "+file.name,"warning");
+}else{
+parsedRows=fallbackCSVParse(e.target.result);
+}
+
+if(!parsedRows.length){
+fileMeta.status="Empty";
+fileMeta.progress=100;
+updateFilePanel();
+showToast("Empty CSV file: "+file.name,"warning");
+processFiles();
+return;
+}
+
+updateProgress(70);
+
+const rows=normalizeRows(parsedRows,fileMeta);
+fileMeta.rowCount=rows.length;
+appendData(rows);
+fileMeta.status="Uploaded";
+updateFilePanel();
+
+runStableProcessingProgress(rows,()=>processFiles());
+
+}catch(err){
+fileMeta.status="Error";
+fileMeta.progress=100;
+updateFilePanel();
+showToast("CSV parsing failed: "+file.name,"error");
+processFiles();
+}
+};
+
+reader.onerror=()=>{
+fileMeta.status="Error";
+fileMeta.progress=100;
+updateFilePanel();
+showToast("File read failed: "+file.name,"error");
+processFiles();
+};
+
+reader.readAsText(file);
+}
+
+function parseExcel(file,fileMeta){
+updateProgress(5);
+
+if(!window.XLSX){
+fileMeta.status="Error";
+updateFilePanel();
+showToast("SheetJS library not loaded.","error");
+processFiles();
+return;
+}
+
+const reader=new FileReader();
+
+reader.onprogress=e=>{
+if(e.lengthComputable)updateProgress(Math.max(5,Math.floor((e.loaded/e.total)*45)));
+};
+
+reader.onload=e=>{
+try{
+updateProgress(50);
+
+const data=new Uint8Array(e.target.result);
+const workbook=XLSX.read(data,{type:"array"});
+let allRows=[];
+
+workbook.SheetNames.forEach(sheetName=>{
+const sheet=workbook.Sheets[sheetName];
+const json=XLSX.utils.sheet_to_json(sheet,{defval:""});
+json.forEach(r=>r.__sheetName=sheetName);
+allRows=allRows.concat(json);
+});
+
+if(!allRows.length){
+fileMeta.status="Empty";
+fileMeta.progress=100;
+updateFilePanel();
+showToast("Empty Excel file: "+file.name,"warning");
+processFiles();
+return;
+}
+
+updateProgress(70);
+
+const rows=normalizeRows(allRows,fileMeta);
+fileMeta.rowCount=rows.length;
+appendData(rows);
+fileMeta.status="Uploaded";
+updateFilePanel();
+
+runStableProcessingProgress(rows,()=>processFiles());
+
+}catch(err){
+fileMeta.status="Error";
+fileMeta.progress=100;
+updateFilePanel();
+showToast("Excel parsing failed: "+file.name,"error");
+processFiles();
+}
+};
+
+reader.onerror=()=>{
+fileMeta.status="Error";
+fileMeta.progress=100;
+updateFilePanel();
+showToast("File read failed: "+file.name,"error");
+processFiles();
+};
+
+reader.readAsArrayBuffer(file);
+}
+
+function runStableProcessingProgress(rows,callback){
+let index=0,total=rows.length||1,chunk=CONFIG.TABLE_RENDER_CHUNK,delay=CONFIG.TABLE_RENDER_DELAY;
+
+function process(){
+for(let i=0;i<chunk&&index<total;i++,index++){}
+
+let p=70+Math.floor((index/total)*30);
+if(p>100)p=100;
+
+updateProgress(p);
+
+if(index<total)setTimeout(process,delay);
+else{
+updateProgress(100);
+
+if(currentFileMeta){
+currentFileMeta.status="Uploaded";
+currentFileMeta.progress=100;
+updateFilePanel();
+}
+
+if(callback)callback();
+}
+}
+
+process();
+}
+
+function updateProgress(p){
+if(percent)percent.innerText=p+"%";
+if(progress)progress.style.width=p+"%";
+
+if(currentFileMeta){
+currentFileMeta.progress=p;
+updateFilePanel();
+}
+}
+
+function fallbackCSVParse(text){
+const lines=text.split(/\r?\n/).filter(Boolean);
+if(!lines.length)return[];
+
+const headers=lines[0].split(",").map(h=>h.trim());
+
+return lines.slice(1).map(line=>{
+const values=line.split(",");
+let obj={};
+headers.forEach((h,i)=>obj[h]=values[i]||"");
+return obj;
+});
+}
+
+function normalizeRows(rows,fileMeta){
+return rows.map(row=>{
+let clean={};
+
+Object.keys(row).forEach(k=>clean[normalizeColumn(k)]=row[k]);
+
+clean.__fileId=fileMeta.id;
+clean.__fileName=fileMeta.name;
+clean.__fileType=fileMeta.type;
+clean.__fileSize=fileMeta.size;
+clean.__monthYear=fileMeta.monthYear||"";
+
+return clean;
+});
+}
+
+function appendData(rows){
+combinedData=combinedData.concat(rows);
+uniqueColumns=Array.from(new Set(combinedData.flatMap(r=>Object.keys(r))));
+validateRequiredColumns();
+}
+
+function validateRequiredColumns(){
+if(!CONFIG.REQUIRED_COLUMNS.length)return;
+
+const missing=CONFIG.REQUIRED_COLUMNS.filter(c=>!uniqueColumns.includes(normalizeColumn(c)));
+
+if(missing.length)showToast("Missing columns: "+missing.join(", "),"warning");
+}
+// =====================================================
+// BLOCK 19 END - FILE UPLOAD / PARSER JS
+// =====================================================
+
+// =====================================================
+// BLOCK 20 START - FILE WIDGET JS
+// Purpose: File dropdown, uploaded file list, remove file
+// CHANGE IN V11: Existing Files pop-up shows all selected files, supports compact width arrow, and bottom open/close arrow.
+// =====================================================
+function toggleFilePanel(){
+fileDropdown.classList.toggle("active");
+}
+
+function toggleFilePanelSize(){
+fileDropdown.classList.toggle("compact");
+updateFilePanel();
+}
+
+function toggleFilePanelBody(){
+fileDropdown.classList.toggle("body-collapsed");
+updateFilePanel();
+}
+
+function updateFilePanel(){
+fileCount.innerText=uploadedFiles.length;
+
+const isCompact=fileDropdown.classList.contains("compact");
+const isCollapsed=fileDropdown.classList.contains("body-collapsed");
+
+let html=`
+<div class="file-panel-header">
+<div>Files (${uploadedFiles.length})</div>
+<div class="file-panel-actions">
+<button class="file-panel-arrow" onclick="toggleFilePanelSize()" title="Reduce / Expand">${isCompact?"➡":"⬅"}</button>
+</div>
+</div>
+`;
+
+if(!uploadedFiles.length){
+html+=`<div class="file-list-body"><div class="file-line" style="grid-template-columns:1fr;">No files uploaded</div></div>`;
+}else{
+html+=`<div class="file-list-body">`;
+html+=uploadedFiles.map(f=>{
+let symbol=
+f.status==="Queued"?"🕒":
+f.status==="Processing"?"⏳":
+f.status==="Uploaded"?"✅":
+f.status==="Error"?"❌":"⚠️";
+
+return `<div class="file-line">
+<div class="file-status-symbol">${symbol}</div>
+<div title="${f.name}"><b>${f.name}</b></div>
+<div>${f.status}</div>
+<div>${f.size}</div>
+<div>${f.rowCount||0} lines</div>
+<div class="file-progress"><div class="file-progress-fill" style="width:${f.progress||0}%"></div><span>${f.progress||0}%</span></div>
+<button class="file-remove" onclick="removeUploadedFile('${f.id}')" title="Remove">×</button>
+</div>`;
+}).join("");
+html+=`</div>`;
+}
+
+html+=`
+<div class="file-panel-footer">
+<button class="file-panel-bottom-arrow" onclick="toggleFilePanelBody()" title="Open / Close">${isCollapsed?"▲":"▼"}</button>
+</div>
+`;
+
+fileDropdown.innerHTML=html;
+}
+
+function removeUploadedFile(fileId){
+uploadedFiles=uploadedFiles.filter(f=>f.id!==fileId);
+combinedData=combinedData.filter(r=>r.__fileId!==fileId);
+
+/* Remove from pending queue also, if parsing has not started */
+fileQueue=fileQueue.filter(q=>{
+const meta=q.fileMeta;
+return !meta || meta.id!==fileId;
+});
+
+uniqueColumns=Array.from(new Set(combinedData.flatMap(r=>Object.keys(r))));
+renderAfterDataChange();
+updateFilePanel();
+showToast("File removed","success");
+}
+// =====================================================
+// BLOCK 20 END - FILE WIDGET JS
+// =====================================================
+
+// =====================================================
+// BLOCK 21 START - FILTERS JS
+// Purpose: Create filters, clear filters, filtered data
+// =====================================================
+function renderFilters(){
+const area=filtersArea;
+area.innerHTML="";
+const preferred=["hosp_city","mapped_city","relation_group","type_of_claim","updated_status","age_band","disease_category","ipd_opd","si_band","__monthYear"];
+const cols=preferred.filter(c=>uniqueColumns.includes(c)).slice(0,CONFIG.FILTER_COLUMN_LIMIT);
+cols.forEach(col=>{
+if(!globalFilters[col])globalFilters[col]=new Set();
+const values=Array.from(new Set(combinedData.map(r=>r[col]).filter(v=>v!==undefined&&v!==null&&String(v).trim()!==""))).slice(0,100);
+const wrap=document.createElement("div");
+wrap.className="filter-pill";
+const btn=document.createElement("button");
+btn.className="filter-btn";
+btn.innerText=prettify(col);
+const menu=document.createElement("div");
+menu.className="filter-menu";
+btn.onclick=()=>{
+document.querySelectorAll(".filter-menu").forEach(m=>{
+if(m!==menu)m.classList.remove("active");
+});
+menu.classList.toggle("active");
+};
+values.forEach(v=>{
+const label=document.createElement("label");
+const cb=document.createElement("input");
+cb.type="checkbox";
+cb.value=v;
+cb.checked=globalFilters[col].has(String(v));
+cb.onchange=()=>{
+if(cb.checked)globalFilters[col].add(String(v));
+else globalFilters[col].delete(String(v));
+renderAll();
+};
+label.appendChild(cb);
+label.appendChild(document.createTextNode(" "+v));
+menu.appendChild(label);
+});
+wrap.appendChild(btn);
+wrap.appendChild(menu);
+area.appendChild(wrap);
+});
+}
+
+function clearAllFilters(){
+globalFilters={};
+renderFilters();
+renderAll();
+showToast("Filters cleared","success");
+}
+
+function getFilteredData(){
+return combinedData.filter(row=>Object.keys(globalFilters).every(col=>{
+const selected=globalFilters[col];
+if(!selected||selected.size===0)return true;
+return selected.has(String(row[col]));
+}));
+}
+// =====================================================
+// BLOCK 21 END - FILTERS JS
+// =====================================================
+
+// =====================================================
+// BLOCK 22 START - DASHBOARD RENDER / CHARTS JS
+// Purpose: Render sections, tables, charts, insights
+// CHANGE IN V11_7: Chart card action buttons updated with clean icons and hover titles.
+// =====================================================
+function renderAfterDataChange(){
+renderFilters();
+populateCustomBuilder();
+renderAll();
+}
+
+function renderAll(){
+filteredData=getFilteredData();
+renderSections();
+}
+
+function renderSections(){
+const container=dashboardSections;
+container.innerHTML="";
+sectionSummaries={};
+SECTION_CONFIGS.forEach(sec=>{
+if(sectionViewState[sec.id]===undefined)sectionViewState[sec.id]="table";
+if(!sec.currentChartType)sec.currentChartType=sec.chartType;
+const card=document.createElement("div");
+card.className="section-card";
+card.innerHTML=`
+<div class="section-header">
+<div class="section-title">${sec.title}</div>
+<div class="chart-tools">
+<button class="tool-icon" onclick="cycleSectionChartType('${sec.id}')" title="Change Chart Type">📊</button>
+<button class="tool-icon" onclick="exportSectionCSV('${sec.id}')" title="Export Table CSV">📗</button>
+<button class="tool-icon" onclick="downloadSectionChart('${sec.id}')" title="Download Chart Image">📽️</button>
+<button class="tool-icon" onclick="toggleSectionView('${sec.id}')" title="Graph / Table">🔀</button>
+</div>
+</div>
+<div class="table-wrap" id="${sec.id}_tableWrap"></div>
+<div class="chart-box" id="${sec.id}_chartBox"><canvas id="${sec.id}_chart"></canvas></div>
+<div class="insights" id="${sec.id}_insights"></div>`;
+container.appendChild(card);
+const summary=buildSectionSummary(sec,filteredData);
+sectionSummaries[sec.id]=summary;
+renderSectionTable(sec,summary);
+renderSectionChart(sec,summary);
+renderSectionInsights(sec,summary);
+applySectionVisibility(sec.id);
+});
+}
+
+function toggleSectionView(id){
+sectionViewState[id]=sectionViewState[id]==="table"?"chart":"table";
+applySectionVisibility(id);
+}
+
+function applySectionVisibility(id){
+const tableWrap=document.getElementById(id+"_tableWrap");
+const chartBox=document.getElementById(id+"_chartBox");
+if(sectionViewState[id]==="chart"){
+tableWrap.style.display="none";
+chartBox.style.display="block";
+}else{
+tableWrap.style.display="block";
+chartBox.style.display="none";
+}
+}
+
+function toggleAllSectionViews(){
+const allSectionsInChartView=SECTION_CONFIGS.every(sec=>sectionViewState[sec.id]==="chart");
+const nextView=allSectionsInChartView?"table":"chart";
+
+SECTION_CONFIGS.forEach(sec=>{
+sectionViewState[sec.id]=nextView;
+
+const tableWrap=document.getElementById(sec.id+"_tableWrap");
+const chartBox=document.getElementById(sec.id+"_chartBox");
+
+if(tableWrap&&chartBox){
+applySectionVisibility(sec.id);
+}
+});
+
+showToast(nextView==="chart"?"All sections switched to Graph view":"All sections switched to Table view","success");
+}
+
+function buildSectionSummary(sec,data){
+const dimension=findColumn(sec.dimensionAliases);
+const valueCol=findColumn(sec.valueAliases);
+if(!dimension)return{headers:["Message"],rows:[["Required dimension column not detected"]],chartLabels:["No Data"],chartValues:[0],raw:[]};
+const map={};
+let totalValue=0,totalCount=0;
+data.forEach(row=>{
+const dim=row[dimension]||"Unknown";
+const val=valueCol?toNumber(row[valueCol]):1;
+if(!map[dim])map[dim]={label:dim,count:0,amount:0};
+map[dim].count++;
+map[dim].amount+=val;
+totalValue+=val;
+totalCount++;
+});
+let rows=Object.values(map).map(x=>{
+const acs=x.count?x.amount/x.count:0;
+const share=totalValue?(x.amount/totalValue)*100:(totalCount?(x.count/totalCount)*100:0);
+return{label:x.label,count:x.count,amount:x.amount,acs,share};
+});
+rows.sort((a,b)=>b.amount-a.amount);
+rows=rows.slice(0,CONFIG.DEFAULT_TOP_N);
+let tableRows=rows.map(r=>{
+if(sec.id==="enrollmentAge")return[r.label,formatNumber(r.count),r.share.toFixed(1)+"%"];
+if(sec.id==="claimSummary"||sec.id==="disease")return[r.label,formatNumber(r.count),formatCurrency(r.amount),r.share.toFixed(1)+"%"];
+if(sec.id==="tat")return[r.label,r.acs.toFixed(1),formatNumber(r.count)];
+if(sec.id==="utilization")return[r.label,formatNumber(r.count),formatCurrency(r.amount),r.share.toFixed(1)+"%"];
+return[r.label,formatNumber(r.count),formatCurrency(r.amount),formatCurrency(r.acs)];
+});
+return{
+headers:sec.tableColumns,
+rows:tableRows,
+raw:rows,
+chartLabels:rows.map(r=>r.label),
+chartValues:rows.map(r=>{
+if(sec.id==="enrollmentAge")return r.count;
+if(sec.id==="disease")return r.share;
+if(sec.id==="siBand"||sec.id==="amountBand")return r.acs;
+if(sec.id==="tat")return r.acs;
+return r.amount||r.count;
+})
+};
+}
+
+function renderSectionTable(sec,summary){
+const wrap=document.getElementById(sec.id+"_tableWrap");
+let html="<table><thead><tr>";
+summary.headers.forEach(h=>html+=`<th>${h}</th>`);
+html+="</tr></thead><tbody>";
+summary.rows.forEach(row=>{
+html+="<tr>";
+row.forEach(cell=>html+=`<td>${cell}</td>`);
+html+="</tr>";
+});
+html+="</tbody></table>";
+wrap.innerHTML=html;
+}
+
+function renderSectionChart(sec,summary){
+const canvasId=sec.id+"_chart";
+if(chartInstances[canvasId])chartInstances[canvasId].destroy();
+
+let rawType=sec.currentChartType||sec.chartType;
+let type=rawType;
+let indexAxis="x";
+let fillArea=false;
+let steppedLine=false;
+
+if(rawType==="horizontalBar"){
+type="bar";
+indexAxis="y";
+}
+
+if(rawType==="area"){
+type="line";
+fillArea=true;
+}
+
+if(rawType==="steppedLine"){
+type="line";
+steppedLine=true;
+}
+
+const circularTypes=["pie","doughnut","polarArea","radar"];
+const isCircular=circularTypes.includes(type);
+
+chartInstances[canvasId]=new Chart(document.getElementById(canvasId),{
+type,
+data:{
+labels:summary.chartLabels,
+datasets:[{
+label:sec.title,
+data:summary.chartValues,
+backgroundColor:fillArea ? "rgba(5,60,109,.18)" : CONFIG.CHART_COLORS,
+borderColor:CONFIG.CHART_COLORS[0]||"#053C6D",
+borderWidth:1.5,
+fill:fillArea,
+tension:steppedLine ? 0 : (type==="line" ? .35 : 0),
+stepped:steppedLine
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+indexAxis,
+plugins:{
+legend:{
+display:isCircular
+}
+},
+scales:isCircular ? {} : {
+x:{beginAtZero:true},
+y:{beginAtZero:true}
+}
+}
+});
+}
+
+function renderSectionInsights(sec,summary){
+const box=document.getElementById(sec.id+"_insights");
+if(!summary.raw||!summary.raw.length){
+box.innerHTML="No data available for insights.";
+return;
+}
+const top=summary.raw[0];
+box.innerHTML=`<b>Key Insights</b><ul><li>${top.label} leads this section with value ${formatCurrency(top.amount||top.count)}.</li><li>Count: ${formatNumber(top.count)}.</li><li>Data reflects current global filters.</li></ul>`;
+}
+
+function cycleSectionChartType(id){
+const types=[
+"bar",
+"horizontalBar",
+"line",
+"area",
+"steppedLine",
+"pie",
+"doughnut",
+"polarArea",
+"radar"
+];
+
+const chartNameMap={
+bar:"Bar",
+horizontalBar:"Horizontal Bar",
+line:"Line",
+area:"Area",
+steppedLine:"Stepped Line",
+pie:"Pie",
+doughnut:"Doughnut",
+polarArea:"Polar Area",
+radar:"Radar"
+};
+
+const sec=SECTION_CONFIGS.find(s=>s.id===id);
+let current=sec.currentChartType||sec.chartType;
+let currentIndex=types.indexOf(current);
+
+if(currentIndex===-1)currentIndex=0;
+
+sec.currentChartType=types[(currentIndex+1)%types.length];
+
+renderSectionChart(sec,sectionSummaries[id]);
+sectionViewState[id]="chart";
+applySectionVisibility(id);
+
+showToast("Chart changed to "+chartNameMap[sec.currentChartType],"success");
+}
+
+function exportSectionCSV(id){
+const summary=sectionSummaries[id];
+if(!summary)return;
+let csv=summary.headers.join(",")+"\n";
+summary.rows.forEach(r=>csv+=r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(",")+"\n");
+downloadBlob(csv,id+"_Section.csv","text/csv");
+}
+
+function downloadSectionChart(id){
+const canvas=document.getElementById(id+"_chart");
+if(!canvas){
+showToast("Chart not available","warning");
+return;
+}
+const a=document.createElement("a");
+a.href=canvas.toDataURL("image/png");
+a.download=id+"_Chart.png";
+a.click();
+}
+// =====================================================
+// BLOCK 22 END - DASHBOARD RENDER / CHARTS JS
+// =====================================================
+
+// =====================================================
+// BLOCK 23 START - CUSTOM CHART BUILDER JS
+// Purpose: Custom chart builder dropdowns and chart render
+// =====================================================
+function populateCustomBuilder(){
+["customX","customY","customGroup"].forEach(id=>{
+const sel=document.getElementById(id);
+sel.innerHTML=id==="customGroup"?`<option value="">No Group</option>`:`<option value="">Select Column</option>`;
+uniqueColumns.forEach(col=>{
+const opt=document.createElement("option");
+opt.value=col;
+opt.textContent=prettify(col);
+sel.appendChild(opt);
+});
+});
+}
+
+function renderCustomChart(){
+const typeRaw=customChartType.value;
+const x=customX.value;
+const y=customY.value;
+const topN=Number(customTopN.value)||10;
+if(!x||!y){
+showToast("Select X and Y columns","warning");
+return;
+}
+const data=getFilteredData();
+const map={};
+data.forEach(row=>{
+const key=row[x]||"Unknown";
+map[key]=(map[key]||0)+toNumber(row[y]);
+});
+const rows=Object.entries(map).map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value).slice(0,topN);
+let type=typeRaw;
+let indexAxis="x";
+if(typeRaw==="horizontalBar"){
+type="bar";
+indexAxis="y";
+}
+if(customChartInstance)customChartInstance.destroy();
+customChartInstance=new Chart(customChart,{
+type,
+data:{
+labels:rows.map(r=>r.label),
+datasets:[{
+label:prettify(y),
+data:rows.map(r=>r.value),
+backgroundColor:CONFIG.CHART_COLORS
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+indexAxis
+}
+});
+showToast("Custom chart rendered","success");
+}
+// =====================================================
+// BLOCK 23 END - CUSTOM CHART BUILDER JS
+// =====================================================
+
+// =====================================================
+// BLOCK 24 START - EXPORT JS
+// Purpose: Export mini panel, CSV/PPTX/PDF download, file blob download
+// CHANGE IN V11_7: Lazy-loads PDF/PPTX libraries only when required to improve initial HTML load speed.
+// =====================================================
+
+function toggleExportMiniPanel(){
+const panel=document.getElementById("exportMiniPanel");
+if(panel)panel.classList.toggle("active");
+}
+
+function closeExportMiniPanel(){
+const panel=document.getElementById("exportMiniPanel");
+if(panel)panel.classList.remove("active");
+}
+
+function handleExportOption(format,type){
+closeExportMiniPanel();
+
+if(format==="csv"&&type==="raw"){
+exportCSV();
+return;
+}
+
+if(format==="csv"&&type==="graph"){
+exportGraphCSV();
+return;
+}
+
+if(format==="csv"&&type==="table"){
+exportTableCSV();
+return;
+}
+
+if(format==="ppt"&&type==="graph"){
+exportPPT("graph");
+return;
+}
+
+if(format==="ppt"&&type==="table"){
+exportPPT("table");
+return;
+}
+
+if(format==="pdf"&&type==="graph"){
+exportPDF("graph");
+return;
+}
+
+if(format==="pdf"&&type==="table"){
+exportPDF("table");
+return;
+}
+}
+
+function openExportModal(){
+toggleExportMiniPanel();
+}
+
+function closeExportModal(){
+closeExportMiniPanel();
+}
+
+function csvEscape(value){
+return `"${String(value??"").replace(/"/g,'""')}"`;
+}
+
+function loadExternalScript(scriptId,src){
+return new Promise((resolve,reject)=>{
+if(document.getElementById(scriptId)){
+resolve();
+return;
+}
+
+const s=document.createElement("script");
+s.id=scriptId;
+s.src=src;
+s.onload=()=>resolve();
+s.onerror=()=>reject(new Error("Failed to load "+src));
+document.head.appendChild(s);
+});
+}
+
+async function ensurePDFLibrary(){
+if(window.jspdf&&window.jspdf.jsPDF)return true;
+
+try{
+showToast("Loading PDF library...","warning");
+await loadExternalScript(
+"jspdfLibrary",
+"https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"
+);
+return !!(window.jspdf&&window.jspdf.jsPDF);
+}catch(e){
+showToast("PDF library not loaded","error");
+return false;
+}
+}
+
+async function ensurePPTXLibrary(){
+if(typeof pptxgen!=="undefined")return true;
+
+try{
+showToast("Loading PPT library...","warning");
+await loadExternalScript(
+"pptxLibrary",
+"https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"
+);
+return typeof pptxgen!=="undefined";
+}catch(e){
+showToast("PPTX library not loaded","error");
+return false;
+}
+}
+
+/* CSV - Raw Data */
+function exportCSV(){
+const data=getFilteredData();
+
+if(!data.length){
+showToast("No data to export","warning");
+return;
+}
+
+const headers=uniqueColumns;
+let csv=headers.join(",")+"\n";
+
+data.forEach(row=>{
+csv+=headers.map(h=>csvEscape(row[h])).join(",")+"\n";
+});
+
+downloadBlob(csv,"IL_Quantum_Filtered_Data.csv","text/csv");
+showToast("CSV Raw Data exported","success");
+}
+
+/* CSV - Graph Data */
+function exportGraphCSV(){
+if(!sectionSummaries||!Object.keys(sectionSummaries).length){
+renderAll();
+}
+
+let csv="Section,Label,Value\n";
+
+SECTION_CONFIGS.forEach(sec=>{
+const summary=sectionSummaries[sec.id];
+if(!summary||!summary.chartLabels)return;
+
+summary.chartLabels.forEach((label,i)=>{
+csv+=[
+csvEscape(sec.title),
+csvEscape(label),
+csvEscape(summary.chartValues[i])
+].join(",")+"\n";
+});
+});
+
+downloadBlob(csv,"IL_Quantum_Graph_Data.csv","text/csv");
+showToast("CSV Graph data exported","success");
+}
+
+/* CSV - Table Data */
+function exportTableCSV(){
+if(!sectionSummaries||!Object.keys(sectionSummaries).length){
+renderAll();
+}
+
+let rowsOut=[];
+
+SECTION_CONFIGS.forEach(sec=>{
+const summary=sectionSummaries[sec.id];
+if(!summary||!summary.headers||!summary.rows)return;
+
+rowsOut.push(csvEscape(sec.title)+","+summary.headers.map(h=>csvEscape(h)).join(","));
+
+summary.rows.forEach(row=>{
+rowsOut.push(csvEscape(sec.title)+","+row.map(c=>csvEscape(c)).join(","));
+});
+
+rowsOut.push("");
+});
+
+downloadBlob(rowsOut.join("\n"),"IL_Quantum_Table_Data.csv","text/csv");
+showToast("CSV Table data exported","success");
+}
+
+/* PPTX - Graph / Table */
+async function exportPPT(type){
+const loaded=await ensurePPTXLibrary();
+if(!loaded)return;
+
+if(!sectionSummaries||!Object.keys(sectionSummaries).length){
+renderAll();
+}
+
+const pptx=new pptxgen();
+pptx.layout="LAYOUT_WIDE";
+pptx.author="IL Quantum";
+pptx.subject="IL Quantum Export";
+pptx.title=type==="graph"?"IL Quantum Graph Export":"IL Quantum Table Export";
+pptx.company="IL Quantum";
+
+SECTION_CONFIGS.forEach(sec=>{
+const summary=sectionSummaries[sec.id];
+if(!summary)return;
+
+const slide=pptx.addSlide();
+slide.background={color:"FFFFFF"};
+
+slide.addText("IL Quantum",{
+x:0.35,
+y:0.15,
+w:4.5,
+h:0.3,
+fontFace:"Mulish",
+fontSize:14,
+bold:true,
+color:"053C6D"
+});
+
+slide.addText(sec.title,{
+x:0.35,
+y:0.52,
+w:11.8,
+h:0.4,
+fontFace:"Mulish",
+fontSize:18,
+bold:true,
+color:"97281D"
+});
+
+if(type==="graph"){
+const canvas=document.getElementById(sec.id+"_chart");
+
+if(canvas){
+try{
+const img=canvas.toDataURL("image/png");
+slide.addImage({
+data:img,
+x:0.45,
+y:1.05,
+w:12.3,
+h:5.8
+});
+}catch(e){
+slide.addText("Chart image not available.",{
+x:0.5,
+y:1.2,
+w:8,
+h:0.3,
+fontSize:12,
+color:"666666"
+});
+}
+}else{
+slide.addText("Chart image not available.",{
+x:0.5,
+y:1.2,
+w:8,
+h:0.3,
+fontSize:12,
+color:"666666"
+});
+}
+
+}else{
+const headers=summary.headers||[];
+const rows=summary.rows||[];
+
+let tableData=[];
+tableData.push(headers.map(h=>String(h)));
+
+rows.forEach(row=>{
+tableData.push(row.map(c=>String(c)));
+});
+
+if(tableData.length>1){
+slide.addTable(tableData,{
+x:0.35,
+y:1.05,
+w:12.5,
+h:5.6,
+fontFace:"Mulish",
+fontSize:8,
+border:{type:"solid",color:"D9D9D9",pt:1},
+color:"1F2937",
+fill:"FFFFFF",
+margin:0.04,
+autoFit:false,
+fit:"shrink"
+});
+}else{
+slide.addText("No table data available.",{
+x:0.5,
+y:1.2,
+w:8,
+h:0.3,
+fontSize:12,
+color:"666666"
+});
+}
+}
+});
+
+pptx.writeFile({
+fileName:type==="graph"?"IL_Quantum_Graph_Export.pptx":"IL_Quantum_Table_Export.pptx"
+});
+
+showToast(type==="graph"?"PPT Graph exported":"PPT Table exported","success");
+}
+
+/* PDF - Graph / Table */
+async function exportPDF(type){
+const loaded=await ensurePDFLibrary();
+if(!loaded)return;
+
+if(!sectionSummaries||!Object.keys(sectionSummaries).length){
+renderAll();
+}
+
+const {jsPDF}=window.jspdf;
+const doc=new jsPDF("landscape","pt","a4");
+const pageWidth=doc.internal.pageSize.getWidth();
+const pageHeight=doc.internal.pageSize.getHeight();
+
+let firstPage=true;
+
+SECTION_CONFIGS.forEach(sec=>{
+const summary=sectionSummaries[sec.id];
+if(!summary)return;
+
+if(!firstPage)doc.addPage();
+firstPage=false;
+
+doc.setFontSize(16);
+doc.setTextColor(5,60,109);
+doc.text("IL Quantum",40,28);
+
+doc.setFontSize(14);
+doc.setTextColor(151,40,29);
+doc.text(sec.title,40,50);
+
+if(type==="graph"){
+const canvas=document.getElementById(sec.id+"_chart");
+
+if(canvas){
+try{
+const img=canvas.toDataURL("image/jpeg",0.85);
+doc.addImage(img,"JPEG",40,70,pageWidth-80,pageHeight-115);
+}catch(e){
+doc.setFontSize(11);
+doc.setTextColor(0,0,0);
+doc.text("Chart image not available.",40,80);
+}
+}else{
+doc.setFontSize(11);
+doc.setTextColor(0,0,0);
+doc.text("Chart image not available.",40,80);
+}
+
+}else{
+doc.setFontSize(9);
+doc.setTextColor(0,0,0);
+
+let y=75;
+const headers=summary.headers||[];
+const rows=summary.rows||[];
+
+doc.text(headers.join(" | "),40,y);
+y+=16;
+
+rows.forEach(row=>{
+if(y>pageHeight-40){
+doc.addPage();
+y=40;
+}
+let line=row.map(c=>String(c)).join(" | ");
+if(line.length>155)line=line.slice(0,155)+"...";
+doc.text(line,40,y);
+y+=14;
+});
+}
+});
+
+doc.save(type==="graph"?"IL_Quantum_Graph_Export.pdf":"IL_Quantum_Table_Export.pdf");
+showToast(type==="graph"?"PDF Graph exported":"PDF Table exported","success");
+}
+
+function downloadBlob(content,name,type){
+const blob=new Blob([content],{type});
+const url=URL.createObjectURL(blob);
+const a=document.createElement("a");
+a.href=url;
+a.download=name;
+a.click();
+URL.revokeObjectURL(url);
+}
+
+// =====================================================
+// BLOCK 24 END - EXPORT JS
+// =====================================================
+// =====================================================
+// BLOCK 25 START - SETTINGS JS
+// Purpose: Open/close settings, apply theme/colors/font/reset
+// =====================================================
+function openSettingsPanel(){
+const modal=document.getElementById("settingsModal");
+if(!modal){
+showToast("Settings panel is missing from HTML","error");
+return;
+}
+
+const themePreset=document.getElementById("settingThemePreset");
+const colorScheme=document.getElementById("settingColorScheme");
+const darkMode=document.getElementById("settingDarkMode");
+const blueColor=document.getElementById("settingOfficialBlue");
+const blueHex=document.getElementById("settingOfficialBlueHex");
+const redColor=document.getElementById("settingOfficialRed");
+const redHex=document.getElementById("settingOfficialRedHex");
+const fontSize=document.getElementById("settingFontSize");
+const fontPreview=document.getElementById("fontSizePreview");
+const topN=document.getElementById("settingTopN");
+const maxFiles=document.getElementById("settingMaxFiles");
+const maxFileSize=document.getElementById("settingMaxFileSize");
+const chunkSize=document.getElementById("settingChunkSize");
+const parserDelay=document.getElementById("settingParserDelay");
+const chartColors=document.getElementById("settingChartColors");
+
+if(themePreset)themePreset.value=CONFIG.THEME_PRESET;
+if(colorScheme)colorScheme.value=CONFIG.COLOR_SCHEME;
+if(darkMode)darkMode.value=CONFIG.DARK_MODE;
+
+const currentBlue=getComputedStyle(document.documentElement).getPropertyValue("--official-blue").trim()||"#053C6D";
+const currentRed=getComputedStyle(document.documentElement).getPropertyValue("--official-red").trim()||"#97281D";
+
+if(blueColor)blueColor.value=currentBlue;
+if(blueHex)blueHex.value=currentBlue;
+if(redColor)redColor.value=currentRed;
+if(redHex)redHex.value=currentRed;
+
+if(fontSize)fontSize.value=CONFIG.FONT_SIZE;
+if(fontPreview)fontPreview.innerText=CONFIG.FONT_SIZE;
+if(topN)topN.value=CONFIG.DEFAULT_TOP_N;
+if(maxFiles)maxFiles.value=CONFIG.MAX_FILE_COUNT;
+if(maxFileSize)maxFileSize.value=CONFIG.MAX_FILE_SIZE_MB;
+if(chunkSize)chunkSize.value=CONFIG.TABLE_RENDER_CHUNK;
+if(parserDelay)parserDelay.value=CONFIG.TABLE_RENDER_DELAY;
+if(chartColors)chartColors.value=CONFIG.CHART_COLORS.join(",");
+
+updateLivePreview();
+modal.style.display="flex";
+}
+
+function closeSettingsPanel(){
+const modal=document.getElementById("settingsModal");
+if(modal)modal.style.display="none";
+}
+
+function syncHexFromColor(colorId,hexId){
+document.getElementById(hexId).value=document.getElementById(colorId).value.toUpperCase();
+settingColorScheme.value="custom";
+CONFIG.COLOR_SCHEME="custom";
+}
+
+function syncColorFromHex(hexId,colorId){
+const v=document.getElementById(hexId).value.trim();
+if(/^#[0-9A-Fa-f]{6}$/.test(v)){
+document.getElementById(colorId).value=v;
+settingColorScheme.value="custom";
+CONFIG.COLOR_SCHEME="custom";
+}
+}
+
+function applySchemeToInputs(){
+const scheme=settingColorScheme.value;
+if(scheme==="custom")return;
+const s=COLOR_SCHEMES[scheme]||COLOR_SCHEMES.official;
+settingOfficialBlue.value=s.blue;
+settingOfficialBlueHex.value=s.blue;
+settingOfficialRed.value=s.red;
+settingOfficialRedHex.value=s.red;
+settingChartColors.value=s.colors.join(",");
+}
+
+function updateFontSizePreview(){
+fontSizePreview.innerText=settingFontSize.value;
+}
+
+function updateLivePreview(){
+const blueInput=document.getElementById("settingOfficialBlueHex");
+const redInput=document.getElementById("settingOfficialRedHex");
+const fontInput=document.getElementById("settingFontSize");
+
+const previewCard=document.getElementById("themePreviewCard");
+const previewTitle=document.getElementById("themePreviewTitle");
+const previewPillBlue=document.getElementById("themePreviewPillBlue");
+const previewPillRed=document.getElementById("themePreviewPillRed");
+const previewTh=document.getElementById("themePreviewTh");
+const previewTh2=document.getElementById("themePreviewTh2");
+
+if(!previewCard)return;
+
+const blue=blueInput ? blueInput.value || "#053C6D" : "#053C6D";
+const red=redInput ? redInput.value || "#97281D" : "#97281D";
+const fontSize=fontInput ? fontInput.value || 14 : 14;
+
+previewCard.style.fontSize=fontSize+"px";
+if(previewTitle)previewTitle.style.color=blue;
+if(previewPillBlue)previewPillBlue.style.background=blue;
+if(previewPillRed)previewPillRed.style.background=red;
+if(previewTh){
+previewTh.style.background=blue;
+previewTh.style.color="#fff";
+}
+if(previewTh2){
+previewTh2.style.background=blue;
+previewTh2.style.color="#fff";
+}
+previewCard.style.borderLeft="4px solid "+red;
+}
+
+function applyThemePreset(v){
+dashboardApp.classList.remove("theme-official-white","theme-clean-white","theme-soft-grey","theme-classic-blue");
+if(v==="clean-white")dashboardApp.classList.add("theme-clean-white");
+else if(v==="soft-grey")dashboardApp.classList.add("theme-soft-grey");
+else if(v==="official-white")dashboardApp.classList.add("theme-official-white");
+else dashboardApp.classList.add("theme-classic-blue");
+}
+
+function applyDarkMode(v){
+if(v==="on")dashboardApp.classList.add("dark-mode");
+else dashboardApp.classList.remove("dark-mode");
+}
+
+function autoApplySettings(shouldRender=true){
+const newTheme=settingThemePreset.value||"classic-blue";
+const newScheme=settingColorScheme.value||"official";
+const newDarkMode=settingDarkMode.value||"off";
+const newBlue=settingOfficialBlueHex.value||"#053C6D";
+const newRed=settingOfficialRedHex.value||"#97281D";
+if(!/^#[0-9A-Fa-f]{6}$/.test(newBlue)||!/^#[0-9A-Fa-f]{6}$/.test(newRed)){
+updateLivePreview();
+return;
+}
+document.documentElement.style.setProperty("--official-blue",newBlue);
+document.documentElement.style.setProperty("--official-red",newRed);
+document.documentElement.style.setProperty("--dashboard-title-blue",newBlue);
+document.documentElement.style.setProperty("--dashboard-tagline-red",newRed);
+document.documentElement.style.setProperty("--base-font-size",(Number(settingFontSize.value)||14)+"px");
+CONFIG.THEME_PRESET=newTheme;
+CONFIG.COLOR_SCHEME=newScheme;
+CONFIG.DARK_MODE=newDarkMode;
+CONFIG.FONT_SIZE=Number(settingFontSize.value)||14;
+CONFIG.DEFAULT_TOP_N=Number(settingTopN.value)||10;
+CONFIG.MAX_FILE_COUNT=Number(settingMaxFiles.value)||25;
+CONFIG.MAX_FILE_SIZE_MB=Number(settingMaxFileSize.value)||50;
+CONFIG.TABLE_RENDER_CHUNK=Number(settingChunkSize.value)||100;
+CONFIG.TABLE_RENDER_DELAY=Number(settingParserDelay.value)||10;
+const colors=settingChartColors.value.split(",").map(c=>c.trim()).filter(c=>c);
+if(colors.length)CONFIG.CHART_COLORS=colors;
+applyThemePreset(newTheme);
+applyDarkMode(newDarkMode);
+updateLivePreview();
+if(shouldRender)renderAll();
+}
+
+function resetDefaultSettings(){
+settingThemePreset.value=DEFAULT_SETTINGS.THEME_PRESET;
+settingColorScheme.value=DEFAULT_SETTINGS.COLOR_SCHEME;
+settingDarkMode.value=DEFAULT_SETTINGS.DARK_MODE;
+settingOfficialBlue.value=DEFAULT_SETTINGS.OFFICIAL_BLUE;
+settingOfficialBlueHex.value=DEFAULT_SETTINGS.OFFICIAL_BLUE;
+settingOfficialRed.value=DEFAULT_SETTINGS.OFFICIAL_RED;
+settingOfficialRedHex.value=DEFAULT_SETTINGS.OFFICIAL_RED;
+settingFontSize.value=DEFAULT_SETTINGS.FONT_SIZE;
+fontSizePreview.innerText=DEFAULT_SETTINGS.FONT_SIZE;
+settingTopN.value=DEFAULT_SETTINGS.DEFAULT_TOP_N;
+settingMaxFiles.value=DEFAULT_SETTINGS.MAX_FILE_COUNT;
+settingMaxFileSize.value=DEFAULT_SETTINGS.MAX_FILE_SIZE_MB;
+settingChunkSize.value=DEFAULT_SETTINGS.TABLE_RENDER_CHUNK;
+settingParserDelay.value=DEFAULT_SETTINGS.TABLE_RENDER_DELAY;
+settingChartColors.value=DEFAULT_SETTINGS.CHART_COLORS.join(",");
+autoApplySettings();
+showToast("Default settings applied","success");
+}
+// =====================================================
+// BLOCK 25 END - SETTINGS JS
+// =====================================================
+
+// =====================================================
+// BLOCK 26 START - UTILITY JS
+// Purpose: Formatting, normalize columns, toast, helper functions
+// =====================================================
+function findColumn(aliases){
+const normalized=aliases.map(a=>normalizeColumn(a));
+return uniqueColumns.find(c=>normalized.includes(c))||"";
+}
+
+function normalizeColumn(col){
+return String(col||"").trim().replace(/\s+/g,"_").replace(/[^\w]/g,"_").replace(/_+/g,"_").replace(/^_|_$/g,"").toLowerCase();
+}
+
+function prettify(col){
+return String(col||"").replace(/^__/,"").replace(/_/g," ").replace(/\b\w/g,m=>m.toUpperCase());
+}
+
+function getExtension(name){
+return String(name).split(".").pop().toLowerCase();
+}
+
+function formatSize(bytes){
+if(bytes<1024)return bytes+" B";
+if(bytes<1024*1024)return(bytes/1024).toFixed(1)+" KB";
+return(bytes/(1024*1024)).toFixed(1)+" MB";
+}
+
+function toNumber(v){
+if(v===null||v===undefined)return 0;
+const n=Number(String(v).replace(/,/g,"").replace(/₹/g,"").replace(/%/g,"").trim());
+return isNaN(n)?0:n;
+}
+
+function formatNumber(n){
+return Number(n||0).toLocaleString("en-IN");
+}
+
+function formatCurrency(n){
+return Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:0});
+}
+
+function showToast(message,type="success"){
+toast.className="toast "+type;
+toast.innerText=message;
+toast.style.display="block";
+setTimeout(()=>toast.style.display="none",3000);
+}
+
+function extractMonthYear(filename){
+const name=filename.toLowerCase();
+const months={
+jan:"Jan",january:"Jan",
+feb:"Feb",february:"Feb",
+mar:"Mar",march:"Mar",
+apr:"Apr",april:"Apr",
+may:"May",
+jun:"Jun",june:"Jun",
+jul:"Jul",july:"Jul",
+aug:"Aug",august:"Aug",
+sep:"Sep",sept:"Sep",september:"Sep",
+oct:"Oct",october:"Oct",
+nov:"Nov",november:"Nov",
+dec:"Dec",december:"Dec"
+};
+for(const key in months){
+if(name.includes(key)){
+const y=name.match(/20\d{2}|\d{2}/);
+return months[key]+(y ? "-"+y[0] : "");
+}
+}
+return "";
+}
+// =====================================================
+// BLOCK 26 END - UTILITY JS
+// =====================================================
+
+// =====================================================
+// BLOCK 27 START - APP INITIALIZATION JS
+// Purpose: Runs once when page loads
+// =====================================================
+updateFilePanel();
+applyThemePreset(CONFIG.THEME_PRESET);
+applyDarkMode(CONFIG.DARK_MODE);
+document.documentElement.style.setProperty("--official-blue",DEFAULT_SETTINGS.OFFICIAL_BLUE);
+document.documentElement.style.setProperty("--official-red",DEFAULT_SETTINGS.OFFICIAL_RED);
+document.documentElement.style.setProperty("--dashboard-title-blue",DEFAULT_SETTINGS.OFFICIAL_BLUE);
+document.documentElement.style.setProperty("--dashboard-tagline-red",DEFAULT_SETTINGS.OFFICIAL_RED);
+document.documentElement.style.setProperty("--base-font-size",CONFIG.FONT_SIZE+"px");
+// =====================================================
+// BLOCK 27 END - APP INITIALIZATION JS
+// =====================================================
+</script>
+
+</body>
+</html>
