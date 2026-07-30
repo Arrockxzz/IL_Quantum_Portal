@@ -1,0 +1,523 @@
+IL_QUANTUM_PORTAL V30_6 COMPLETE REBUILD PROMPT AND FUNCTIONAL SPECIFICATION
+==============================================================================
+Use this document as a master prompt for an AI coding tool to rebuild the IL Quantum Portal from scratch while preserving the intent, layout, interactions, animations, and behavior of the working V30_6 portal.
+
+SOURCE BASELINE
+- Name: IL_Quantum_Portal -IL theme V30_6.html
+- Application title: IL Quantum
+- Primary purpose: A unified data hub for intelligent decisions, with homepage animation, role navigation, business team dashboard, file parsing, slicers, charts, exports, settings, and uploaded file management.
+- Must preserve: homepage door animation, ICICI/IL branding assets, dashboard ribbon, parser behavior, slicer behavior, export behavior, responsive layout, animations, and block-wise maintainable structure.
+
+CRITICAL DO-NOT-BREAK RULES
+1. Do not disturb the homepage door animation. It depends on #homePage, .door-left, .door-right, .door-open, internalLogin(), and the 1200ms transition timing.
+2. Do not introduce JavaScript syntax errors anywhere. A single JS error prevents internalLogin() from loading and locks the homepage.
+3. Keep all embedded images/assets intact. The dashboard corner logo is an embedded Base64 data URI in the dashboard HTML. Copy it exactly from the source file when rebuilding.
+4. Keep Chart.js, PapaParse, and SheetJS/XLSX external libraries loaded in the head.
+5. Keep the block structure with pagewise master blocks and micro-block comments to support future replacement by block number.
+6. Avoid unnecessary redesign. Only change specific requested blocks in future updates.
+7. Heavy rendering must be scheduled/debounced so file parsing, refresh, and clear filters do not freeze the page.
+
+PAGEWISE BLOCK ARCHITECTURE TO RECREATE
+- PAGEWISE BLOCK 010: Complete CSS theme and page styles.
+- PAGEWISE BLOCK 020: Homepage complete HTML.
+- PAGEWISE BLOCK 030: Login and user selection page complete HTML.
+- PAGEWISE BLOCK 040: Dashboard complete HTML.
+- PAGEWISE BLOCK 050: Complete JavaScript application logic.
+- PAGEWISE BLOCK 099: Document closing.
+
+MICRO BLOCK MAP DETECTED IN SOURCE
+- BLOCK 00 START - DOCUMENT SETUP AND LIBRARIES: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- PAGEWISE BLOCK 010 START - COMPLETE CSS THEME AND PAGE STYLES: All existing CSS retained intact. Includes homepage, login/navigation, dashboard, menu, filters, file panel, export, settings, tables, charts, animations, and responsiveness.
+- BLOCK 01 START - CSS MICRO SECTION 01: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 02 START - CSS MICRO SECTION 02: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 03 START - CSS MICRO SECTION 03: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 04 START - CSS MICRO SECTION 04: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 05 START - CSS MICRO SECTION 05: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 06 START - CSS MICRO SECTION 06: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 07 START - CSS MICRO SECTION 07: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 08 START - CSS MICRO SECTION 08: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 09 START - CSS MICRO SECTION 09: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 10 START - CSS MICRO SECTION 10: Login/Navigation page Home icon side Back/Forward arrows.
+- BLOCK 11 START - CSS MICRO SECTION 11: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 12 START - CSS MICRO SECTION 12: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 13 START - CSS MICRO SECTION 13: Dashboard logo placement and dashboard top menu spacing.
+- BLOCK 14 START - CSS MICRO SECTION 14: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 15 START - CSS MICRO SECTION 15: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 16 START - CSS MICRO SECTION 16: File progress display, remove button styling, and file upload row animation.
+- BLOCK 17 START - CSS MICRO SECTION 17: Dashboard top ribbon, file status symbol, brand area, compact icon-only Home pill, icon-only Menu, and compact user profile dropdown styling.
+- BLOCK 18 START - CSS MICRO SECTION 18: Dashboard menu icon base style, labels, conditional menu transition animation, and icon load/click bounce effect.
+- BLOCK 19 START - CSS MICRO SECTION 19: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 20 START - CSS MICRO SECTION 20: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 21 START - CSS MICRO SECTION 21: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 22 START - CSS MICRO SECTION 22: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 23 START - CSS MICRO SECTION 23: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 24 START - CSS MICRO SECTION 24: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 25 START - CSS MICRO SECTION 25: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 26 START - CSS MICRO SECTION 26: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 27 START - CSS MICRO SECTION 27: Dashboard Home/Menu dropdown styling, submenu behavior, search area, navigation list, and hover bridge stabilization.
+- BLOCK 28 START - CSS MICRO SECTION 28: Export mini panel rows, export action buttons, and filter area layout.
+- BLOCK 29 START - CSS MICRO SECTION 29: Filter button/dropdown styling, filter-row action icons, export overlay behavior, and filter/action bounce animation.
+- BLOCK 30 START - CSS MICRO SECTION 30: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 31 START - CSS MICRO SECTION 31: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 32 START - CSS MICRO SECTION 32: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 33 START - CSS MICRO SECTION 33: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 34 START - CSS MICRO SECTION 34: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 35 START - CSS MICRO SECTION 35: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 36 START - CSS MICRO SECTION 36: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 37 START - CSS MICRO SECTION 37: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 38 START - CSS MICRO SECTION 38: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 39 START - CSS MICRO SECTION 39: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 40 START - CSS MICRO SECTION 40: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 41 START - CSS MICRO SECTION 41: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 42 START - CSS MICRO SECTION 42: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 43 START - HTML MICRO SECTION 01: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 44 START - HTML MICRO SECTION 02: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 45 START - HTML MICRO SECTION 03: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- PAGEWISE BLOCK 020 START - HOMEPAGE COMPLETE HTML: Complete homepage, title, stage, and door animation HTML. Homepage behavior remains unchanged.
+- BLOCK 46 START - HTML MICRO SECTION 04: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- PAGEWISE BLOCK 030 START - LOGIN AND USER SELECTION PAGE COMPLETE HTML: Complete login/navigation page with role cards and home/back/forward controls. Behavior remains unchanged.
+- BLOCK 47 START - HTML MICRO SECTION 05: Dashboard page container and top-left anniversary/logo image.
+- PAGEWISE BLOCK 040 START - DASHBOARD COMPLETE HTML: Complete dashboard page including logo, file panel, top ribbon, dashboard menu, filters, sections, chart builder, settings, export containers, and toast/modal HTML. Behavior remains unchanged.
+- BLOCK 48 START - HTML MICRO SECTION 06: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 49 START - HTML MICRO SECTION 07: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 50 START - HTML MICRO SECTION 08: Dashboard compact icon-only Home pill, icon-only Menu List button, and Home menu dropdown first category.
+- BLOCK 51 START - HTML MICRO SECTION 09: Dashboard Home menu remaining categories and no-result message.
+- BLOCK 52 START - HTML MICRO SECTION 10: Conditional dashboard menu action buttons and compact top-right user profile dropdown.
+- BLOCK 53 START - HTML MICRO SECTION 11: Hidden file inputs, active dashboard/module title line, and dashboard filters area.
+- BLOCK 54 START - HTML MICRO SECTION 12: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 55 START - HTML MICRO SECTION 13: Custom Chart Builder section.
+- BLOCK 56 START - HTML MICRO SECTION 14: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 57 START - HTML MICRO SECTION 15: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 58 START - HTML MICRO SECTION 16: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 59 START - HTML MICRO SECTION 17: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 60 START - HTML MICRO SECTION 18: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- PAGEWISE BLOCK 050 START - COMPLETE JAVASCRIPT APPLICATION LOGIC: All existing JavaScript retained intact. Includes page navigation, homepage door flow, dashboard state, upload/parser, filters, tables/charts, export, settings, file panel, animations, and initialization.
+- BLOCK 61 START - JAVASCRIPT MICRO SECTION 01: Global runtime variables, dashboard module registry, and default settings.
+- BLOCK 62 START - JAVASCRIPT MICRO SECTION 02: Core color schemes, runtime config, and business-ready dashboard section configuration.
+- BLOCK 63 START - JAVASCRIPT MICRO SECTION 03: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 64 START - JAVASCRIPT MICRO SECTION 04: Homepage animation, navigation entry, and dashboard landing behavior.
+- BLOCK 65 START - JAVASCRIPT MICRO SECTION 05: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 66 START - JAVASCRIPT MICRO SECTION 06: Module state management, conditional menu visibility, file upload event binding, file validation, duplicate filename prevention, and queue creation.
+- BLOCK 67 START - JAVASCRIPT MICRO SECTION 07: File queue processing, CSV parsing, Excel parsing, completion messaging, and file popup auto-close.
+- BLOCK 68 START - JAVASCRIPT MICRO SECTION 08: Stable file processing progress, CSV fallback parser, and progress updater.
+- BLOCK 69 START - JAVASCRIPT MICRO SECTION 09: Row normalization and module-specific data append.
+- BLOCK 70 START - JAVASCRIPT MICRO SECTION 10: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 71 START - JAVASCRIPT MICRO SECTION 11: Uploaded file panel rendering and file removal.
+- BLOCK 72 START - JAVASCRIPT MICRO SECTION 12: Module-specific dynamic filters, slicer Search/Select All/Remove All controls, filter-row action icons, export popup, files icon, and clear filter behavior.
+- BLOCK 73 START - JAVASCRIPT MICRO SECTION 13: Module-aware dashboard rendering after data changes.
+- BLOCK 74 START - JAVASCRIPT MICRO SECTION 14: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 75 START - JAVASCRIPT MICRO SECTION 15: Dashboard view toggle, business-ready section summary builder, and table renderer.
+- BLOCK 76 START - JAVASCRIPT MICRO SECTION 16: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 77 START - JAVASCRIPT MICRO SECTION 17: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 78 START - JAVASCRIPT MICRO SECTION 18: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 79 START - JAVASCRIPT MICRO SECTION 19: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 80 START - JAVASCRIPT MICRO SECTION 20: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 81 START - JAVASCRIPT MICRO SECTION 21: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 82 START - JAVASCRIPT MICRO SECTION 22: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 83 START - JAVASCRIPT MICRO SECTION 23: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 84 START - JAVASCRIPT MICRO SECTION 24: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 85 START - JAVASCRIPT MICRO SECTION 25: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 86 START - JAVASCRIPT MICRO SECTION 26: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 87 START - JAVASCRIPT MICRO SECTION 27: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 88 START - JAVASCRIPT MICRO SECTION 28: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 89 START - JAVASCRIPT MICRO SECTION 29: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 90 START - JAVASCRIPT MICRO SECTION 30: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 91 START - JAVASCRIPT MICRO SECTION 31: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- BLOCK 92 START - JAVASCRIPT MICRO SECTION 32: Dashboard Home menu selection, module-switch animation, Back/Forward button animation, and internal page history arrows.
+- BLOCK 93 START - JAVASCRIPT MICRO SECTION 33: Dashboard Home menu search, global outside-click popup closer, and initial UI setup.
+- BLOCK 94 START - DOCUMENT CLOSING HTML: Clean sequential safe block in V16_2. Functionality unchanged from V16_1.
+- PAGEWISE BLOCK 099 START - DOCUMENT CLOSING: Final document body/html closure.
+
+VISUAL DESIGN SPECIFICATION
+1. Global font: Mulish. Body uses CSS variable --base-font-size, default 13px.
+2. Primary colors: official blue #053C6D / #003b70 style, official red #97281D, orange accent #f47b20, dark red #c92b12, clean white backgrounds.
+3. Top dashboard ribbon: sticky orange gradient bar, logo at top-left, brand text ICICI Lombard / IL Quantum, compact icon-only Home pill, icon-only menu, Excel import button, and user profile icon on right.
+4. Homepage: white background, top orange-red stripe, two animated door panels, centered IL Quantum brand card and subtitle.
+5. Navigation page: role cards for Business Team, Relationship Manager, Corporate Client, Admin, each with icon, title, subtitle and hover transitions.
+6. Dashboard sections: white cards, thin borders, orange title underline, table/chart toggle tools, sticky table headers, insights strip.
+7. Slicers: pill buttons in filter row, dropdowns with search, select all, remove all, and high z-index overlay above charts.
+8. Export popup: hidden by default; opens only when export action icon receives active class; rows show CSV, PPT, PDF formats and graph/table/raw actions.
+9. File panel: uploaded files dropdown with compact/full modes, progress bars, statuses, remove buttons, immediate close after successful parsing.
+10. User profile: compact dropdown, appears above content, settings tiny icon beside user name, role text and logout action.
+
+HOMEPAGE AND DOOR ANIMATION REQUIREMENTS
+- #homePage fills full viewport, white background, clickable to call internalLogin().
+- .door-stage contains .door-left and .door-right, each 50% width.
+- #homePage.door-open .door-left translates X(-100%); .door-right translates X(100%).
+- .home-brand-shape fades/moves upward when door-open is applied.
+- internalLogin() must set internalLoggedIn=true, add door-open class, wait 1200ms, hide homepage, show mainNavigation, then record navigation page history.
+
+ROLE NAVIGATION PAGE REQUIREMENTS
+- Show after homepage animation completes.
+- Home button returns to homepage via goToHome(). Back and forward controls use dashboardHistoryBack() and dashboardHistoryForward().
+- Business Team card opens dashboard through openInternalEmp().
+- Relationship Manager, Corporate Client and Admin currently show locked/restricted message through lockedPath().
+
+DASHBOARD WORKFLOW REQUIREMENTS
+1. Dashboard starts as hidden #dashboardApp and becomes visible after Business Team is opened.
+2. Before upload, show blank landing with centered 25 years/IL logo style area and default dashboard strip.
+3. Excel button triggers hidden #fileInput click.
+4. Uploaded files are queued and parsed sequentially. Parsed rows are normalized and appended to combinedData.
+5. After all files parse, render filters, custom chart builder and dashboard sections.
+6. Dashboard state is module-aware and should save/restore uploaded files, filters, section view modes, chart types and data.
+
+FILE PARSING SPECIFICATION
+- Accept .csv, .xlsx, .xls through hidden file input.
+- Validate file count and file size using CONFIG.MAX_FILE_COUNT and CONFIG.MAX_FILE_SIZE_MB.
+- CSV parsing uses PapaParse when available, with header=true and skipEmptyLines=true; fallbackCSVParse handles simple CSV.
+- Excel parsing uses SheetJS XLSX.read(arrayBuffer,{type:"array"}); iterate workbook.SheetNames; sheet_to_json with defval:""; add __sheetName to rows.
+- Each file metadata object includes id, name, type, size, rawSize, status, monthYear, rowCount and progress.
+- updateProgress() updates visible percentage and progress bar, but file panel rebuilds must be throttled through scheduleFilePanelUpdate().
+- processFiles() should close fileDropdown immediately after all successful files have uploaded; keep popup open if there are issues.
+- renderAfterDataChange() must schedule heavy dashboard render, not block the final parsing step.
+
+SLICER AND FILTER SPECIFICATION
+- renderFilters() creates filter pills using preferred column order: policy_name, policy_no, iltc_tag, whether_hospital_networked, relation_group, type_of_claim, updated_status, age_band, disease_category, ipd_opd, __monthYear.
+- Display labels: Policy, Policy No, ILTC, Network Hospital, Relation Group, Type Of Claim, Updated Status, Age Band, Disease Category, Ipd Opd, MonthYear.
+- Each slicer dropdown contains search input, select all check icon, remove all x icon and a scrollable checklist.
+- Selecting a checkbox updates globalFilters[col] and closes the slicer popup, then schedules dashboard refresh.
+- Select All applies only visible searched values, closes popup and schedules refresh.
+- Remove All clears the filter values for that slicer, closes popup and schedules refresh.
+- Clear All Filters clears globalFilters, unchecks visible boxes and schedules refresh without rebuilding slicer row first.
+- Refresh Charts schedules renderAll through debounce/requestAnimationFrame to avoid page freeze.
+- Uploaded Files action icon opens existing file panel through toggleFilePanel().
+- Export action icon toggles export mini panel; export panel must be hidden by default and visible only when active.
+
+DASHBOARD SECTION CONFIGURATION AND BUSINESS LOGIC
+- SECTION_CONFIGS defines each dashboard section with id, title, sectionType, dimensionAliases, chartType and tableColumns.
+- Current claim-intelligence sections include claim status, IPD/OPD, claim type, relation, age band, disease category, top cities, top states, top hospitals, deduction analysis, TAT/settlement, and sum insured utilization.
+- buildSectionSummary() dispatches by sectionType. amountSummary uses buildAmountSummary; hospitalSummary uses buildHospitalSummary; deductionSummary uses buildDeductionSummary; tatSummary uses buildTatSummary; utilizationSummary uses buildUtilizationSummary.
+- Financial metrics include claim count, claimed amount, approved/net sanctioned amount, paid amount, outstanding amount, deduction amount, disallowed amount, copayment, ACS, share percentage, utilization percentage, settlement TAT and LOS.
+
+CHART AND TABLE RENDERING REQUIREMENTS
+- renderSections() creates section cards and renders table, chart and insights for each section.
+- To stay responsive, render sections one-by-one using requestAnimationFrame/time slicing.
+- Tables are rendered into .table-wrap with sticky headers.
+- Charts use Chart.js and should destroy old chart instances before reusing canvases.
+- toggleSectionView() and toggleAllSectionViews() must switch between table and graph without losing state.
+- cycleSectionChartType() cycles chart type for a section.
+
+EXPORT SPECIFICATION
+- Export mini panel has rows for CSV, PPT, PDF.
+- CSV supports graph, table and raw data exports.
+- PPT/PDF buttons are present for graph/table export workflows as configured.
+- exportCSV(), exportGraphCSV(), exportTableCSV(), exportSectionCSV() and downloadSectionChart() handle downloads using Blob/canvas operations.
+- Always keep export popup hidden by default; only add active class on click.
+
+SETTINGS SPECIFICATION
+- Settings opens from user profile mini gear beside user name.
+- Settings modal includes theme preset, color scheme, dark mode, official blue/red color pickers, font size, Top N, max files, max file size, chunk size, parser delay and chart colors.
+- applyThemePreset(), applyDarkMode(), autoApplySettings(), updateLivePreview(), resetDefaultSettings() must work without full page reload.
+
+FUNCTION-BY-FUNCTION REBUILD GUIDE
+001. function createEmptyDashboardModuleState()
+     Purpose: Create a blank isolated state object for a dashboard module, including files, data, filters, view modes and charts.
+002. function recordAppPage(pageName)
+     Purpose: Push the current logical app page into internal navigation history and maintain back/forward position.
+003. function showAppPage(pageName,shouldRecord=true)
+     Purpose: Switch visible page among homepage, navigation page and dashboard while preserving expected display states.
+004. function internalLogin()
+     Purpose: Trigger homepage door-open animation, wait for transition, hide homepage and show role navigation page.
+005. function goToHome()
+     Purpose: Return user to the homepage, reset visible application pages and preserve animation-ready home state.
+006. function openInternalEmp()
+     Purpose: Open Business Team/dashboard entry after navigation card click and initialize default dashboard workspace.
+007. function lockedPath(pathName)
+     Purpose: Show locked/access-restricted message for Relationship Manager, Corporate Client, and Admin paths.
+008. function appHistoryBack()
+     Purpose: Navigate backward in internal page history for login/navigation pages.
+009. function appHistoryForward()
+     Purpose: Navigate forward in internal page history for login/navigation pages.
+010. function cloneFilterState(filterObj)
+     Purpose: Deep clone global filter sets without retaining direct references.
+011. function decodeDashboardModuleName(moduleName)
+     Purpose: Convert encoded dashboard module route/name into display-ready title.
+012. function updateActiveModuleTitleStrip()
+     Purpose: Update the small active module strip shown below the top ribbon.
+013. function destroyRuntimeCharts()
+     Purpose: Destroy Chart.js chart instances safely before rerendering charts or switching modules.
+014. function saveActiveDashboardModuleState()
+     Purpose: Persist active module state, uploaded files, combined data, filters, charts and view state in memory.
+015. function restoreDashboardModuleState(moduleName)
+     Purpose: Restore previously saved module state when a dashboard module is reopened.
+016. function setModuleUIVisibility(isModuleActive)
+     Purpose: Show or hide pre-upload and post-upload menu groups based on whether dashboard data exists.
+017. function renderBlankLogoLanding()
+     Purpose: Render the centered landing/empty dashboard view before any upload is completed.
+018. function resetDashboardToModuleLanding()
+     Purpose: Reset dashboard content area to the empty module landing view.
+019. function openDashboardModule(moduleName)
+     Purpose: Open a selected dashboard module, restore its state and render the correct view.
+020. function handleFileUpload(files)
+     Purpose: Validate selected files, build file metadata entries, queue uploads and start parser queue.
+021. function processFiles()
+     Purpose: Process queued files in sequence and trigger dashboard render after all files complete.
+022. function parseCSV(file,fileMeta)
+     Purpose: Read CSV files using PapaParse when available, normalize rows, append data and update status.
+023. function parseExcel(file,fileMeta)
+     Purpose: Read Excel files using SheetJS XLSX, merge rows from sheets, normalize rows, append data and update status.
+024. function scheduleFilePanelUpdate()
+     Purpose: Throttle uploaded-file panel rebuilds to avoid UI freezes during parsing progress events.
+025. function runStableProcessingProgress(rows,callback)
+     Purpose: Complete progress after parsing and defer next queue step so browser remains responsive.
+026. function updateProgress(p)
+     Purpose: Update visible progress percentage/bar and file metadata progress without excessive DOM rebuilds.
+027. function fallbackCSVParse(text)
+     Purpose: Simple CSV parser fallback when PapaParse is unavailable.
+028. function normalizeRows(rows,fileMeta)
+     Purpose: Normalize column names, add file metadata fields and month/year helper fields to parsed rows.
+029. function appendData(rows)
+     Purpose: Append normalized rows into the active module combined dataset.
+030. function validateRequiredColumns()
+     Purpose: Check required columns when configured and warn if missing.
+031. function toggleFilePanel()
+     Purpose: Open/close the uploaded files parsing/details panel.
+032. function toggleFilePanelSize()
+     Purpose: Toggle uploaded files panel between compact and full view.
+033. function toggleFilePanelBody()
+     Purpose: Collapse or expand uploaded files body area.
+034. function updateFilePanel()
+     Purpose: Render uploaded files list, statuses, progress bars, row counts and action buttons.
+035. function removeUploadedFile(fileId)
+     Purpose: Remove an uploaded file and corresponding parsed rows from dashboard data.
+036. function scheduleSlicerDashboardRefresh()
+     Purpose: Debounce and schedule dashboard refresh after slicer action to reduce UI blocking.
+037. function buildSlicerMenuControls(col,list,menu)
+     Purpose: Create slicer toolbar with search, select all and remove all small actions.
+038. function buildFilterExportPanel()
+     Purpose: Create export mini-panel rows and buttons for CSV, PPT and PDF graph/table/raw exports.
+039. function addExportRow(typeIcon,typeTitle,actions)
+     Purpose: Function present in the portal JavaScript; preserve existing behavior and inspect source for exact implementation details.
+040. function buildBlueBroomIcon()
+     Purpose: Build the inline SVG broom icon used by clear-all-filters button.
+041. function syncExistingSlicerCheckboxesAfterClear()
+     Purpose: Uncheck visible slicer checkboxes after clear without rebuilding the slicer row.
+042. function renderFilters()
+     Purpose: Render configured slicer/filter pills and action icons: refresh, view toggle, export, clear and uploaded files.
+043. function clearAllFilters()
+     Purpose: Clear global filters, uncheck current slicer boxes, schedule dashboard refresh and show toast.
+044. function getFilteredData()
+     Purpose: Apply global filters to combinedData and return currently filtered rows.
+045. function requestDashboardRender()
+     Purpose: Schedule renderAll on the next browser frame to prevent immediate blocking.
+046. function renderAfterDataChange()
+     Purpose: After file/data update, render filters/custom chart builder and schedule dashboard render.
+047. function renderAll()
+     Purpose: Main dashboard render coordinator: get filtered data, show filters/builder and call renderSections.
+048. function renderSections()
+     Purpose: Render dashboard section cards one by one across frames to avoid long UI freezes.
+049. function renderNextSection()
+     Purpose: Function present in the portal JavaScript; preserve existing behavior and inspect source for exact implementation details.
+050. function toggleSectionView(id)
+     Purpose: Toggle one card between table and chart mode.
+051. function applySectionVisibility(id)
+     Purpose: Apply table/chart visibility for a specific section based on stored sectionViewState.
+052. function toggleAllSectionViews()
+     Purpose: Toggle all dashboard sections between graph view and table view.
+053. function getFirstAvailableColumn(aliases)
+     Purpose: Find the first available column from a list of aliases using normalized column matching.
+054. function getColumnValue(row,col,fallback="")
+     Purpose: Return a row value with fallback handling for blank/undefined/null.
+055. function getTextValue(row,col,fallback="Unknown")
+     Purpose: Return a trimmed text value with Unknown fallback.
+056. function getAmountColumnValue(row,aliases)
+     Purpose: Find an amount column by aliases and convert to numeric value.
+057. function getClaimKey(row)
+     Purpose: Return claim number based key for distinct claim counting, with fallback row key.
+058. function initAgg(label)
+     Purpose: Initialize aggregation object for claim analytics grouping.
+059. function addAggRow(agg,row)
+     Purpose: Accumulate one row into an aggregation bucket: counts, amounts, deductions, SI and helper values.
+060. function aggClaimCount(agg)
+     Purpose: Return distinct claim count from aggregation bucket.
+061. function aggACS(agg)
+     Purpose: Calculate average claim size = approved amount / claim count.
+062. function pct(part,total)
+     Purpose: Calculate percentage safely.
+063. function formatPct(n)
+     Purpose: Format number as one decimal percentage.
+064. function average(arr)
+     Purpose: Average numeric values safely.
+065. function median(arr)
+     Purpose: Median numeric values safely.
+066. function maxValue(arr)
+     Purpose: Maximum numeric value safely.
+067. function modeValue(values,fallback="")
+     Purpose: Most frequent text value, used for city/state/network display.
+068. function parseDateValue(v)
+     Purpose: Parse Excel serial numbers and common date string formats.
+069. function daysBetween(start,end)
+     Purpose: Calculate non-negative day difference between two dates.
+070. function formatMonthYearFromDate(d)
+     Purpose: Format Date object as MMM-YYYY bucket.
+071. function getMonthBucket(row)
+     Purpose: Derive month bucket from helper/date columns.
+072. function monthSortValue(label)
+     Purpose: Convert month-year label into sortable numeric key.
+073. function groupDataByDimension(data,dimensionCol)
+     Purpose: Group filtered rows by a dimension and aggregate metrics.
+074. function buildAmountSummary(sec,data)
+     Purpose: Build generic claim amount summary rows and chart values.
+075. function buildHospitalSummary(sec,data)
+     Purpose: Build top hospitals summary with city/state/network mode values.
+076. function buildDeductionSummary(sec,data)
+     Purpose: Build deduction reason summary with deduction percentages.
+077. function buildTatSummary(sec,data)
+     Purpose: Build settlement TAT and length-of-stay monthly summary.
+078. function buildUtilizationSummary(sec,data)
+     Purpose: Build sum insured usage summary by policy/group.
+079. function buildSectionSummary(sec,data)
+     Purpose: Dispatch to the correct summary builder based on section type.
+080. function renderSectionTable(sec,summary)
+     Purpose: Render summary rows into the section table wrapper.
+081. function renderSectionChart(sec,summary)
+     Purpose: Render Chart.js chart for a dashboard section.
+082. function renderSectionInsights(sec,summary)
+     Purpose: Render short insight text below section based on summary values.
+083. function cycleSectionChartType(id)
+     Purpose: Cycle chart type for a section and rerender section chart.
+084. function exportSectionCSV(id)
+     Purpose: Export one section table summary as CSV.
+085. function downloadSectionChart(id)
+     Purpose: Download a section chart canvas as image.
+086. function populateCustomBuilder()
+     Purpose: Populate custom chart builder dropdowns with available columns.
+087. function renderCustomChart()
+     Purpose: Render user-configured custom chart from selected X/Y/group/topN inputs.
+088. function toggleExportMiniPanel()
+     Purpose: Toggle active class on mini export panel.
+089. function closeExportMiniPanel()
+     Purpose: Close export mini popup panel.
+090. function handleExportOption(format,type)
+     Purpose: Route mini export action to selected CSV/PPT/PDF graph/table/raw handler.
+091. function openExportModal()
+     Purpose: Open legacy export modal if used.
+092. function closeExportModal()
+     Purpose: Close legacy export modal.
+093. function csvEscape(value)
+     Purpose: Escape values for safe CSV download.
+094. function loadExternalScript(scriptId,src)
+     Purpose: Load external scripts dynamically when required by export features.
+095. function exportCSV()
+     Purpose: Export current filtered raw data to CSV.
+096. function exportGraphCSV()
+     Purpose: Export chart/graph data summary to CSV.
+097. function exportTableCSV()
+     Purpose: Export table summary data to CSV.
+098. function downloadBlob(content,name,type)
+     Purpose: Create a browser download from a Blob and file name.
+099. function openSettingsPanel()
+     Purpose: Open settings modal and sync controls with current settings.
+100. function closeSettingsPanel()
+     Purpose: Close settings modal.
+101. function syncHexFromColor(colorId,hexId)
+     Purpose: Sync hex text input when color input changes.
+102. function syncColorFromHex(hexId,colorId)
+     Purpose: Sync color input when hex text changes.
+103. function applySchemeToInputs()
+     Purpose: Apply selected predefined color scheme to settings fields.
+104. function updateFontSizePreview()
+     Purpose: Update font-size preview text while changing slider.
+105. function updateLivePreview()
+     Purpose: Update settings modal live preview card.
+106. function applyThemePreset(v)
+     Purpose: Apply selected dashboard theme preset class.
+107. function applyDarkMode(v)
+     Purpose: Enable/disable dashboard dark mode class.
+108. function autoApplySettings(shouldRender=true)
+     Purpose: Apply settings changes live and optionally save UI state.
+109. function resetDefaultSettings()
+     Purpose: Reset settings to default values and apply them.
+110. function findColumn(aliases)
+     Purpose: Find a dataset column using aliases and normalized comparison.
+111. function normalizeColumn(col)
+     Purpose: Normalize column names by lowercasing and replacing non-word characters.
+112. function prettify(col)
+     Purpose: Convert a column/key into a readable label.
+113. function getExtension(name)
+     Purpose: Return file extension from file name.
+114. function formatSize(bytes)
+     Purpose: Format file byte size as readable KB/MB.
+115. function toNumber(v)
+     Purpose: Convert currency/number-like strings to numeric value safely.
+116. function formatNumber(n)
+     Purpose: Format count/number with locale separators.
+117. function formatCurrency(n)
+     Purpose: Format numeric amount in INR-style display.
+118. function showToast(message,type="success")
+     Purpose: Show temporary success/error/warning toast notification.
+119. function extractMonthYear(filename)
+     Purpose: Extract month-year token from file name or current date fallback.
+120. function openDashboardHomeMenu()
+     Purpose: Open dashboard home/menu dropdown programmatically.
+121. function closeDashboardHomeMenu()
+     Purpose: Close dashboard home/menu dropdown programmatically.
+122. function animateMenuArrowButton(buttonEl,direction)
+     Purpose: Animate back/forward menu arrow click feedback.
+123. function animateDashboardMenuSelection(clickedItem)
+     Purpose: Animate selected dashboard menu item.
+124. function animateDashboardModuleTitleStrip()
+     Purpose: Animate active module strip transition.
+125. function animateDashboardModuleTitleText()
+     Purpose: Animate module title text update.
+126. function animateDashboardModuleBody()
+     Purpose: Animate dashboard body during module switch.
+127. function animateDashboardModuleSwitch()
+     Purpose: Wrapper for module switch animation sequence.
+128. function handleDashboardHomeMenuSelection(menuName)
+     Purpose: Handle dashboard menu item click and open selected module/placeholder.
+129. function dashboardHistoryBack()
+     Purpose: Navigate backward in app history and animate arrow.
+130. function dashboardHistoryForward()
+     Purpose: Navigate forward in app history and animate arrow.
+131. function filterDashboardHomeMenu()
+     Purpose: Filter dashboard home menu categories/items using search input.
+132. function clearDashboardHomeMenuSearch()
+     Purpose: Clear dashboard menu search and reset filtered results.
+133. function closeDashboardFloatingPopupsOnOutsideClick(event)
+     Purpose: Global click handler to close export/files/settings/filter popups safely.
+
+COLUMN NORMALIZATION AND DATA RULES
+- normalizeColumn() lowercases names and replaces non-word characters with underscores to make alias detection reliable.
+- findColumn() must compare normalized aliases against actual column list.
+- Amount parsing must tolerate commas, currency symbols and blank values.
+- Date parsing must support Excel serial dates and strings such as ISO or dd/mm/yyyy.
+- When a required dimension column is not detected, the related section should show a Message table rather than fail.
+
+PERFORMANCE RULES
+1. Do not rebuild file panel on every FileReader progress event; use scheduleFilePanelUpdate().
+2. Do not render all dashboard cards synchronously after final file parse; defer render and yield between sections.
+3. Debounce slicer-driven render using scheduleSlicerDashboardRefresh().
+4. Avoid rebuilding slicer row on Clear All; only clear state and uncheck current boxes.
+5. Destroy Chart.js instances before recreating charts.
+
+REBUILD OUTPUT REQUIREMENTS FOR AN AI CODER
+- Produce one complete standalone HTML file.
+- Keep all CSS, HTML and JS inline except external libraries from CDN.
+- Preserve pagewise and micro block comments exactly in spirit so future replacements can target blocks.
+- Use no build tools. The file must open directly in browser.
+- Ensure no JavaScript syntax errors by running node --check on the inline JS before delivery.
+- Ensure homepage click opens door and navigation page.
+- Ensure Business Team opens dashboard.
+- Ensure file upload parses CSV/XLSX and populates filters, tables and charts.
+- Ensure export popup is closed by default.
+- Ensure slicer popup closes after selection.
+- Ensure uploaded file panel auto-close delay is 0 seconds after successful parse.
+
+TEST PLAN
+- Open file in browser. Click homepage. Door animation must open and navigation page must appear after 1200ms.
+- Click Business Team. Dashboard must open with logo, ribbon, active module strip and blank/default landing.
+- Click Excel and upload one CSV and one XLSX. File panel must show parsing progress. UI should remain responsive.
+- After parsing, filters must appear. Tables and charts must render.
+- Open each slicer, search a value, select a value. Slicer must close and table values must update.
+- Click Select All and Remove All in a slicer. Slicer must close and dashboard values must update.
+- Click Refresh Charts. Page should not freeze for a minute.
+- Click Clear All Filters. Visible checkboxes uncheck and dashboard refreshes smoothly.
+- Click Export icon. Export Options panel opens. It must not be open by default on page load.
+- Click Uploaded Files icon. Existing file parsing/details panel appears.
+- Open user icon. Compact user popup appears above charts/icons with settings gear beside user name.
+- Click Settings gear. Settings modal opens. Theme/dark mode/font changes apply.
+- Click Logout. App returns to homepage without breaking door animation for next login.
+
+FINAL MASTER PROMPT TO GIVE AN AI CODER
+Build a complete standalone HTML portal named IL Quantum. It must exactly implement the architecture, visual behavior, functions, data flow, animations, file parsing, dashboard analytics, slicers, exports, settings and state handling described in this document. Use pagewise master blocks and micro-block comments. Preserve the homepage door animation and ensure no JavaScript syntax errors. Use Chart.js, PapaParse, SheetJS/XLSX and Mulish font. Include a dashboard with Orange/ICICI Lombard themed top ribbon, embedded logo asset copied from source, role navigation, Business Team dashboard, file parser, slicer filters with search/select/remove, scheduled rendering, claim analytics cards, charts/tables, export options, uploaded files panel, compact user menu, and settings modal. The output must be one self-contained HTML file that can run locally in a browser.
