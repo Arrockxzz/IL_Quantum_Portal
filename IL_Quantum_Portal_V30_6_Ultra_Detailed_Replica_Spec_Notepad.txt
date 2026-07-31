@@ -1,0 +1,316 @@
+IL_QUANTUM_PORTAL V30_6 ULTRA-DETAILED REPLICA BUILD SPECIFICATION
+==============================================================================================================
+Document purpose: This Notepad specification is written so another AI coding tool can recreate a same-style, same-flow, fully functioning IL Quantum Portal webpage from scratch. The specification covers exact placement, page states, user journeys, UI components, micro-interactions, animations, parser workflow, slicer behavior, export behavior, settings, dashboard rendering, and quality checks.
+
+TARGET OUTPUT
+- One standalone HTML file.
+- No backend/server dependency.
+- Inline CSS and inline JavaScript.
+- External libraries allowed only through CDN: Chart.js, PapaParse 5.4.1, SheetJS/XLSX, Google Font Mulish.
+- The webpage must work by directly opening the HTML file in a modern browser.
+- The build must keep a block-wise structure for future replacement updates.
+
+CORE BRAND AND THEME
+- Portal name: IL Quantum.
+- Subtitle/tagline: A Unified Data Hub for Intelligent Decisions.
+- Brand context: ICICI Lombard / IL Quantum corporate dashboard.
+- Font: Mulish everywhere unless a browser fallback is required.
+- Main colors: orange #f47b20, deep orange/red #c92b12, official blue #053C6D or #003b70, official red #97281D, white #ffffff, slate #1f2937, muted gray #6b7280.
+- Visual style: corporate, compact, dashboard-first, orange ribbon, white cards, dark-blue text, red/orange accents.
+- Animations: soft bounce, fade, slide, scale. All motion must be subtle and professional.
+
+ABSOLUTE DO-NOT-BREAK RULES
+1. The homepage door animation must always work. A JavaScript syntax issue anywhere must be treated as a blocking defect.
+2. Do not touch homepage behavior unless the change explicitly asks for homepage updates.
+3. Export popup must be hidden by default and open only on export icon click.
+4. Slicer popup must close after selection, select all, or remove all.
+5. File parsing should not freeze the browser, especially after the last Excel file.
+6. Refresh Charts and Clear All Filters must not lock the page for a long time.
+7. User profile dropdown must open above charts/icons and remain compact.
+8. Uploaded Files icon in slicer row must open the same uploaded/parsing file list panel.
+9. Keep all existing functionality and animation intent unless a requested change says otherwise.
+10. Maintain block-wise code comments for safe future updates.
+
+RECOMMENDED BLOCK STRUCTURE
+- BLOCK 00: Document setup, title, fonts, scripts.
+- PAGEWISE BLOCK 010: Complete CSS theme and page styles.
+- CSS MICRO BLOCKS 01-42: root variables, global reset, homepage, login/navigation, dashboard ribbon, menu, slicers, export, file panel, cards, settings, modal, responsive, animations.
+- PAGEWISE BLOCK 020: Homepage complete HTML.
+- PAGEWISE BLOCK 030: Login/user selection complete HTML.
+- PAGEWISE BLOCK 040: Dashboard complete HTML.
+- PAGEWISE BLOCK 050: JavaScript complete logic.
+- JAVASCRIPT MICRO BLOCKS 61-93: runtime variables, configs, navigation, module state, parser, file panel, filters, rendering, tables, charts, export, settings, utilities, menu animation, startup.
+- PAGEWISE BLOCK 099: Document closing.
+
+PAGE STATE MODEL
+- HOME_STATE: #homePage visible. #mainNavigation hidden. #dashboardApp hidden. Door is closed.
+- NAVIGATION_STATE: #mainNavigation visible after door animation. #homePage hidden. #dashboardApp hidden.
+- DASHBOARD_EMPTY_STATE: #dashboardApp visible after Business Team. No files parsed. Blank centered logo landing visible. Filters hidden. Custom chart builder hidden.
+- DASHBOARD_DATA_STATE: Parsed data exists. Filters visible. Custom chart builder visible. Dashboard cards visible.
+- POPUP_STATE: Any overlay such as slicer list, export list, uploaded-files panel, settings modal, user menu or dashboard menu is open above current page.
+
+EXACT HOMEPAGE STRUCTURE AND PLACEMENT
+- Element: <div id="homePage" onclick="internalLogin()">.
+- Placement: full browser viewport, visible on initial load, at top of DOM body.
+- Inside #homePage create <div class="door-stage"> that covers homepage.
+- Inside .door-stage create .door.door-left and .door.door-right.
+- .door-left occupies left 50 percent of viewport and contains centered text IL.
+- .door-right occupies right 50 percent of viewport and contains centered text Quantum.
+- Door panels use orange/red/white branded gradients, subtle shadows, borders at the meeting line, and transition on transform around 1.2 seconds ease-in-out.
+- Add .entry-overlay centered over door-stage.
+- Add .home-brand-shape centered card. Desktop min-width around 460px, padding around 30px 38px 28px, border-radius around 18px.
+- Add .home-main-title text IL Quantum, font around 50px, weight 900, color #003b70.
+- Add .home-subtitle text A Unified Data Hub for Intelligent Decisions, font around 15px, red/accent color.
+- Door-open animation: when #homePage gets class door-open, .door-left transform translateX(-100%), .door-right transform translateX(100%).
+- After exactly about 1200ms, hide #homePage and show #mainNavigation.
+
+HOMEPAGE MICRO-INTERACTIONS
+- Cursor can be pointer over entire homepage.
+- On click, doors slide outward. Do not require a separate login form.
+- The opening should feel like two doors revealing the navigation page.
+- When user logs out and returns home, door-open class/state must reset so the next click can replay animation.
+- Reduced-motion users should have animation disabled or simplified but navigation must still work.
+
+LOGIN / ROLE SELECTION PAGE STRUCTURE
+- Element: <div id="mainNavigation">, hidden initially.
+- Top navigation control area includes Home and Back/Forward controls.
+- Main panel includes brand title IL Quantum and subtitle/tagline.
+- Add nav-grid with four role cards: Business Team, Relationship Manager, Corporate Client, Admin.
+- Business Team card: icon person/user, title Business Team, description full consolidated reports, onclick openInternalEmp().
+- Relationship Manager card: icon globe, title Relationship Manager, description assigned clients/restricted access, onclick lockedPath().
+- Corporate Client card: icon building, title Corporate Client, description issued policies/limited access, onclick lockedPath().
+- Admin card: gear icon, title Admin, description system administration/restricted access, onclick lockedPath().
+- Cards are centered, responsive, white/soft background, rounded, hover lift/shadow.
+
+DASHBOARD SHELL EXACT PLACEMENT
+- Element: <div id="dashboardApp" class="theme-classic-blue">, hidden until Business Team is clicked.
+- Dashboard corner logo: fixed at very top-left, top about 2px, left about 4px, height about 64px, max-width about 92px, transparent background, z-index above ribbon, pointer-events none.
+- Top ribbon: .controls-card, sticky top 0, full width, orange to deep orange/red gradient, z-index around 2400, padding left enough to avoid logo overlap.
+- Inside ribbon: .button-row flex row, align center, gap around 8px, width 100%.
+- Brand block immediately after logo area: .dashboard-menu-brand, height around 52px, min-width around 178px, right border white-transparent. Line 1 ICICI Lombard, line 2 IL Quantum.
+- Home control next: compact pill with left arrow, home icon only, right arrow: | ‹ 🏠 › |. Height around 52px. Left arrow calls dashboardHistoryBack(), icon calls goToHome(), right arrow calls dashboardHistoryForward().
+- Menu icon next: icon-only ☰, same height/alignment as Home and Excel. On hover opens dashboard menu.
+- Excel button next: 📥 icon and Excel label. Calls hidden file input click.
+- User icon far right: margin-left auto, round 👤 button, size around 44px, opens compact profile dropdown on hover.
+- Active module strip below ribbon: white horizontal strip, small blue text like ✓ Default Dashboard. Width 100%.
+- Filter/slicer row below active module strip: #filtersArea, centered flex, hidden before upload.
+- Dashboard grid below filters: #dashboardSections, width around 91%, centered, margin around 14px auto 26px.
+- Custom chart builder: hidden before upload, displayed after upload.
+- Toast: fixed bottom-right, dark background, success/error/warning variants.
+
+TOP RIBBON MICRO-INTERACTIONS
+- Home pill hover: background becomes semi-transparent white, moves up about 1px, subtle shadow.
+- Home arrows hover: scale slightly, show transparent white background, off-white/orange tint.
+- Home icon hover: slight scale, no text title.
+- Menu icon hover: button lift/brightness consistent with menu-icon-btn styling.
+- Excel button hover: lift/brightness consistent with menu icons.
+- User icon hover: round icon background becomes more visible, scale about 1.06, shadow appears.
+
+DASHBOARD MENU DROPDOWN SPECIFICATION
+- .home-menu-wrap must be position:relative and include a transparent hover bridge under icon to prevent closure when cursor moves to dropdown.
+- Dropdown top should start flush around 52px below icon. No gap.
+- Dropdown includes search row with magnifier, input placeholder Search menu..., clear x button.
+- Categories: Health Claim, Muse Data, HCU.
+- Health Claim submenu: GHI Summary, Retail, Claim Rejections.
+- Muse Data submenu: SRS Data, Resolution Data, MTD Creation, Detailed Creation.
+- HCU submenu: HCU Summary.
+- Category hover opens sublist to right. A transparent bridge between category and sublist prevents closure.
+- Each item calls handleDashboardHomeMenuSelection("Category > Item").
+- Search filters categories and child items live. Show no matching menu found when empty.
+
+USER PROFILE DROPDOWN SPECIFICATION
+- User icon: round 👤 at far right of ribbon.
+- Dropdown placement: absolute, top around 54px, right 0, width max-content, min-width around 150px, max-width around 230px, white background, border, radius around 10px, box-shadow, z-index around 13000.
+- Dropdown opens on hover.
+- First row: Ankit Sharma text on left, tiny circular ⚙ button on right.
+- Gear size around 22px, hover inverts to blue background white icon. Gear calls openSettingsPanel().
+- Second row: Business Team role text in red/dark accent, compact font, bottom border.
+- Action row: Logout button with 🚪 icon, red-styled hover, calls goToHome().
+- Dropdown must overlay charts, slicers, export popup and cards.
+
+FILE UPLOAD AND PARSING FLOW
+1. User clicks 📥 Excel in dashboard ribbon.
+2. Hidden file input #fileInput triggers file picker. Accept .csv, .xlsx, .xls and multiple files.
+3. handleFileUpload validates extension, duplicate file, max files, max size.
+4. Valid files create metadata: id, name, type, size, rawSize, status Processing/Pending, monthYear, rowCount, progress.
+5. Metadata is pushed to uploadedFiles. Queue items pushed to fileQueue.
+6. File panel opens so user can see parsing status.
+7. processFiles takes one file at a time.
+8. CSV path: FileReader.readAsText, Papa.parse header:true skipEmptyLines:true, fallbackCSVParse if Papa is missing.
+9. Excel path: FileReader.readAsArrayBuffer, XLSX.read, iterate workbook.SheetNames, XLSX.utils.sheet_to_json with defval:"", add __sheetName.
+10. normalizeRows normalizes column names, adds file metadata and __monthYear.
+11. appendData merges rows into combinedData and updates uniqueColumns.
+12. updateProgress updates percent/progress bar. updateFilePanel must be throttled through scheduleFilePanelUpdate to avoid freeze.
+13. runStableProcessingProgress marks Uploaded, progress 100, and proceeds to next item after browser repaint.
+14. When queue empty: renderAfterDataChange, save state, update panel, close file panel immediately if all uploaded, show toast.
+15. If issues exist, keep file panel open and show error/warning toast.
+
+UPLOADED FILE PANEL PLACEMENT AND ACTIONS
+- File widget dropdown appears near top-right/floating dashboard area or opened via slicer row Files icon.
+- Width around 610px desktop, max-width calc(100vw - 16px), max-height around 320px, scrollable.
+- File rows show status symbol, file name, file type/size/month-year, progress bar, percent/status, row count and remove action.
+- Panel supports compact/full size toggle and body collapse/expand.
+- Remove file deletes metadata and rows, rerenders filters/dashboard, updates panel.
+- Successful upload auto-close delay: 0 seconds.
+
+SLICER ROW EXACT SPECIFICATION
+- Appears only after data exists.
+- #filtersArea is flex, centered, wrapped, gap around 6px, z-index above charts.
+- Slicer button .filter-btn: pill shape, white background, dark-blue text, border, font 10px, Mulish, normal weight.
+- Preferred order: policy_name, policy_no, iltc_tag, whether_hospital_networked, relation_group, type_of_claim, updated_status, age_band, disease_category, ipd_opd, __monthYear.
+- Labels: Policy, Policy No, ILTC, Network Hospital, Relation Group, Type Of Claim, Updated Status, Age Band, Disease Category, Ipd Opd, MonthYear.
+- Menu .filter-menu: absolute below button, width around 250px, max-height around 285px, white, radius 9px, shadow, z-index around 9500.
+- Toolbar: search input + ✓ select all + × remove all in one row. Search uses left large input; action icons are tiny circular 26px.
+- List: checkbox labels, max-height around 214px, scrollable.
+- Checkbox selection closes menu, updates globalFilters and schedules dashboard refresh.
+- Select All selects only visible searched values, closes menu, schedules refresh.
+- Remove All unchecks the slicer values, closes menu, schedules refresh.
+- Clear All broom clears all filters, unchecks visible checkboxes, schedules refresh.
+- Refresh icon schedules dashboard refresh.
+- View icon toggles all sections graph/table.
+- Export icon opens export popup.
+- Uploaded Files icon opens file panel.
+
+EXPORT MINI PANEL SPECIFICATION
+- Export popup is hidden by default with display:none!important.
+- It is attached inside .filter-action-wrap under export icon.
+- It only appears when active class is present.
+- Placement: top around 31px, left 50%, transform translateX(-50%), z-index around 9900.
+- Title: Export Options.
+- CSV row icon 🧾, actions: graph 📈, table 📋, raw 🗃️.
+- PPT row icon 📽️, actions: graph 📈, table 📋.
+- PDF row icon 📕, actions: graph 📈, table 📋.
+- Action buttons call handleExportOption(format,type).
+
+DASHBOARD SECTION SYSTEM
+- Use SECTION_CONFIGS to define dashboard cards.
+- Required sections: Claim Status Summary, IPD/OPD Summary, Type of Claim Summary, Relation Wise Claims, Age Band Wise Claims, Disease Category Wise Claims, Top Hospital Cities, Top Hospital States, Top Hospitals, Deduction Analysis, TAT / Settlement Analysis, Sum Insured Utilization.
+- Each section card contains: header, title, chart tools, table wrapper, chart box with canvas, insights div.
+- Default view can be table unless state says chart.
+- renderSections should create cards one by one using requestAnimationFrame to maintain responsiveness.
+- Each card tool: chart type, export table CSV, download chart image, graph/table toggle.
+
+BUSINESS METRICS
+- Claim Count: distinct claim_number if available, else row count.
+- Claimed Amount: sum claimed_amount aliases.
+- Approved Amount: sum net_sanct_amt / approved aliases.
+- Paid Amount: sum payment_amount aliases.
+- Outstanding Amount: sum claim_r_os_amt aliases.
+- Deduction Amount: disallowed_amount + copayment_amt.
+- ACS: Approved Amount / Claim Count.
+- Share %: Approved Amount / Total Approved Amount.
+- Deduction %: Total Deduction / Claimed Amount.
+- Settlement TAT: payment_date - inward_date.
+- LOS: dod - doa.
+- Utilization %: Approved Amount / Sum Insured.
+
+SETTINGS MODAL SPECIFICATION
+- Opens from user menu gear.
+- Modal width around 760px, max-width 96vw, max-height 92vh, scrollable.
+- Fields: theme preset, color scheme, dark mode, official blue, official red, font size, Top N, max files, max file size, table chunk size, parser delay, chart colors.
+- Live preview card updates when settings change.
+- autoApplySettings applies theme/color/font changes immediately.
+- resetDefaultSettings restores defaults.
+
+POPUP CLOSING RULES
+- Clicking outside active slicer closes slicer.
+- Slicer closes after checkbox/select/remove action.
+- Export popup closes when clicking outside export wrapper.
+- File popup closes when clicking outside file panel/widget unless clicking uploaded files button.
+- Settings modal closes when clicking outside settings modal unless clicking settings button.
+- User menu is hover-based and closes when pointer leaves user-profile-wrap.
+
+FUNCTION CATALOG
+- internalLogin: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- goToHome: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- openInternalEmp: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- lockedPath: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- appHistoryBack: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- appHistoryForward: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- openDashboardModule: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- handleFileUpload: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- processFiles: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- parseCSV: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- parseExcel: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- scheduleFilePanelUpdate: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- runStableProcessingProgress: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- updateProgress: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- normalizeRows: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- appendData: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- toggleFilePanel: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- updateFilePanel: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- removeUploadedFile: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- renderFilters: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- clearAllFilters: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- getFilteredData: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- requestDashboardRender: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- renderAfterDataChange: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- renderAll: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- renderSections: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- toggleAllSectionViews: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- buildSectionSummary: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- renderSectionTable: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- renderSectionChart: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- renderSectionInsights: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- populateCustomBuilder: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- renderCustomChart: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- toggleExportMiniPanel: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- handleExportOption: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- exportCSV: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- exportGraphCSV: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- exportTableCSV: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- downloadBlob: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- openSettingsPanel: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- autoApplySettings: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- applyThemePreset: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- applyDarkMode: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- showToast: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- filterDashboardHomeMenu: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- clearDashboardHomeMenuSearch: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- dashboardHistoryBack: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- dashboardHistoryForward: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+- closeDashboardFloatingPopupsOnOutsideClick: implement according to the workflow sections above. Preserve names when possible because inline onclick handlers depend on these function names.
+
+COMPLETE JOURNEY FLOWS
+- First load: Homepage displayed, doors closed, navigation/dashboard hidden.
+- Home click: Door opens, navigation appears after 1200ms.
+- Navigation home: Home control returns to homepage and resets door animation readiness.
+- Business Team: Business Team card opens dashboard empty state.
+- Locked roles: Other cards show restricted toast only.
+- Menu hover: ☰ hover opens stable dropdown; cursor can move into list without closure.
+- Menu search: Typing filters categories/items; clear x resets.
+- Submenu select: Click item opens module route and updates title strip.
+- Upload files: Excel button opens file picker, parser queue starts, file panel shows progress.
+- CSV parse: CSV rows parse, normalize, append, file status uploaded.
+- Excel parse: All sheets parse, normalize, append, status uploaded.
+- All files done: Dashboard filters/cards render, file panel closes immediately if no issue.
+- Slicer select: Open slicer, choose checkbox, menu closes, dashboard values update.
+- Slicer select all: Click ✓, visible values selected, menu closes, values update.
+- Slicer remove all: Click ×, slicer values clear, menu closes, values update.
+- Clear all: Click broom, all filter values clear, visible boxes uncheck, values update.
+- Refresh: Click ↻, dashboard values refresh smoothly.
+- View switch: Click 🔀, all cards switch table/chart.
+- Export: Click ⇪, export popup opens, choose export action.
+- Uploaded files: Click 🗂️, file panel opens.
+- User settings: Hover 👤, click ⚙ beside name, settings modal opens.
+- Logout: Hover 👤, click Logout, homepage returns.
+
+QA CHECKLIST
+- No JS syntax errors
+- Homepage door animation works on first load and after logout
+- Business Team opens dashboard
+- File parse works for CSV and XLSX
+- Last Excel does not freeze page for a minute
+- Slicers update table values
+- Slicer closes after selection
+- Export popup hidden by default
+- Export popup opens only on export click
+- Uploaded Files icon opens panel
+- Menu dropdown does not close across icon-to-list gap
+- User popup compact and above charts
+- Refresh and Clear are smooth
+- Settings modal applies live changes
+- Responsive layout remains usable
+
+FINAL MASTER AI PROMPT
+Create a one-file standalone HTML replica of IL Quantum Portal V30_6. Implement the exact page states, placements, visual style, top ribbon, homepage door animation, role navigation, dashboard, file parser, uploaded files panel, slicers, actions, export panel, charts/tables, settings modal, user profile dropdown, internal history, micro-interactions, animations, responsive behavior and QA checklist described in this document. Use Chart.js, PapaParse, SheetJS/XLSX and Mulish. Keep block comments and avoid any backend dependency.

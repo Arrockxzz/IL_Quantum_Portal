@@ -1,0 +1,861 @@
+
+
+ICICI Lombard Health Management Portal
+Business Requirements Document (BRD) for IT Development
+Baseline Reference: IL_Quantum_Portal -IL theme V30_6
+Prepared for: IT Development, QA, UI/UX, Data Analytics and Support Teams
+Document Purpose
+This BRD converts the working portal concept into a development-ready specification. It explains business objective, scope, UI placement, user journeys, data processing, slicer behavior, dashboard actions, export workflow, settings, non-functional requirements, implementation sequence, and acceptance tests required to rebuild the same functioning portal.
+
+Field	Details
+Document Type	Business Requirements Document with step-by-step coding and implementation guidance
+System Name	IL Quantum Portal
+Baseline Version	IL_Quantum_Portal -IL theme V30_6
+Primary Users	Health Management / Business Team users who upload claim datasets and analyze dashboard outputs
+Technology Target	Single-page HTML, CSS, JavaScript application using browser-based file parsing and chart rendering
+Critical Constraint	Homepage door animation, dashboard UI, upload parser, slicers, export, settings, files panel, and animations must remain stable and non-breaking
+
+ 
+Table of Contents
+1.	1. Executive Summary
+2.	2. Business Objectives
+3.	3. Scope and Out of Scope
+4.	4. Stakeholders and RACI
+5.	5. Current Working Baseline Summary
+6.	6. Target Solution Architecture
+7.	7. Page and Layout Requirements
+8.	8. User Journey Flows
+9.	9. Functional Requirements
+10.	10. File Upload and Parsing Requirements
+11.	11. Data Model and Field Mapping
+12.	12. Slicer and Filter Requirements
+13.	13. Dashboard Tables and Charts
+14.	14. Export and File Panel Requirements
+15.	15. Settings and Theme Requirements
+16.	16. Non-Functional Requirements
+17.	17. Security and Governance
+18.	18. Error Handling and Notifications
+19.	19. Step-by-Step Development Plan
+20.	20. API/Library and Dependency Plan
+21.	21. Testing Strategy
+22.	22. Acceptance Criteria
+23.	23. Deployment, Versioning and Support
+24.	24. Traceability Matrix
+25.	25. Appendix: Build Checklist and Master Prompt
+ 
+1. Executive Summary
+IL Quantum Portal is a browser-based, single-page analytics portal for claim data exploration. The application allows business users to move from a branded homepage into a dashboard, select or retain dashboard modules, upload Excel or CSV claim files, monitor parsing status, filter data through slicers, view claim analytics tables/charts, export outputs, and manage display settings.
+The IT team must develop a functionally equivalent web page that preserves the working behavior of the latest baseline. The implementation must prioritize stability of the homepage door animation, browser responsiveness during file parsing, predictable slicer behavior, and module-wise data isolation.
+Critical Success Definition
+The portal is successful when a business user can open the homepage, trigger the door animation, enter the dashboard, upload claim files, filter data, refresh output, clear filters, view file parsing details, export outputs, and use settings without page crash, UI freeze, or layout breakage.
+
+2. Business Objectives
+•	Provide a unified browser-based portal for claim data ingestion and analysis without requiring backend deployment for the baseline version.
+•	Allow business users to upload multiple Excel or CSV files and generate dashboard summaries using normalized data.
+•	Provide clear slicers for policy, ILTC, network hospital, relation, claim type, status, age band, disease category, IPD/OPD and MonthYear.
+•	Enable fast operational analysis through tables, charts, export options, uploaded file progress panel and custom chart builder.
+•	Keep the user experience polished with controlled animations, stable popups, responsive rendering and clean ICICI Lombard theme alignment.
+3. Scope and Out of Scope
+Category	In Scope	Out of Scope / Notes
+Homepage	Branded landing page with door animation and transition into navigation/dashboard flow.	No backend login authentication required unless added in a future phase.
+Navigation/Login	Internal business user entry and dashboard launch behavior.	SSO, Active Directory and role API integration are future enhancements.
+Dashboard	Upload, slicers, dashboard tables/charts, export, files panel, settings, user dropdown and module selection.	Real-time server data sync is not part of current baseline.
+File Parsing	Client-side CSV, XLS and XLSX parsing using browser libraries.	Large-scale enterprise ETL pipeline is future scope.
+Exports	CSV/PPT/PDF export actions as per portal UI.	Enterprise document repository integration is future scope.
+Security	Client-side guardrails, file validation and no external data upload.	Formal security hardening and authentication must be separately designed for production deployment.
+
+4. Stakeholders and RACI
+Role	Responsibility	RACI
+Business Owner	Defines business dashboard, slicer, table and claim analytics requirements.	Accountable
+IT Front-End Developer	Builds single-page HTML/CSS/JavaScript portal according to this BRD.	Responsible
+Data Analyst	Validates column mapping, claim metrics, calculations and dashboard sections.	Consulted
+QA Tester	Executes functional, regression, file parsing and UI tests.	Responsible
+IT Security	Reviews browser-side file handling, dependencies and deployment controls.	Consulted
+Production Support	Maintains version history and supports business users after release.	Informed
+
+5. Current Working Baseline Summary
+The current baseline version is IL_Quantum_Portal -IL theme V30_6. This version is considered stable for homepage door animation, dashboard load, slicer behavior, file panel behavior, export popup default-hidden behavior, and file parsing popup delay. IT team must use this baseline as the behavioral reference.
+•	Homepage door animation must remain isolated from dashboard and parsing logic.
+•	Dashboard top ribbon must include logo, brand, compact Home icon with back/forward, Menu icon, Excel upload icon and user profile icon.
+•	User profile dropdown must open above dashboard cards and include name, settings icon and logout option.
+•	Slicers must open above charts/cards, include search, select all and remove all, and close after selection.
+•	Export Options panel must remain hidden by default and must open only when Export icon is clicked.
+•	File parsing panel must close immediately after successful parsing, based on the latest baseline rule.
+6. Target Solution Architecture
+6.1 Technology Architecture
+•	Single-page HTML file containing HTML, CSS and JavaScript blocks.
+•	Client-side file parsing using Papa Parse for CSV and SheetJS/XLSX for Excel files.
+•	Client-side chart rendering using Chart.js or equivalent library already referenced by the portal.
+•	No mandatory backend service for baseline implementation.
+•	Data remains in browser memory during the active session.
+•	Export operations are handled from browser-side data and rendered chart/table states.
+6.2 Logical Architecture
+Layer	Responsibilities
+Presentation Layer	Homepage, navigation, dashboard shell, top ribbon, slicers, cards, tables, charts, file panel, settings panel, export popup.
+Interaction Layer	Door animation, menu dropdown, user dropdown, slicer popup, refresh, clear, view toggle, export selection, file panel opening.
+Data Processing Layer	File validation, queue management, CSV/Excel parsing, row normalization, field mapping, module state management.
+Analytics Layer	Filtered data computation, section summaries, chart datasets, custom chart builder, table rendering, insight text rendering.
+State Layer	Uploaded files, file queue, active module, module-specific data, filters, chart instances, section view states, settings.
+Utility Layer	Toast messaging, formatting, currency and number conversion, date/month extraction, export helpers, settings/theme utilities.
+
+7. Page and Layout Requirements
+7.1 Homepage
+The homepage is the first visible state. It must display the portal branding and a door-opening animation trigger. The door animation must complete before the next page is shown. Failure in unrelated dashboard JavaScript must not be allowed to break the homepage animation.
+•	Placement: full browser viewport.
+•	Interaction: click or invoke homepage entry action to animate door-open state.
+•	Transition: after animation duration, hide homepage and show navigation/dashboard flow.
+•	Do not place dashboard initialization logic inside the homepage animation function.
+•	Do not introduce heavy processing before homepage transition completes.
+7.2 Navigation / Business User Entry
+•	Navigation page appears after the homepage door animation.
+•	Business Team button opens dashboard.
+•	Back to homepage action resets internal login state.
+•	Navigation should not render dashboard charts until dashboard is explicitly opened.
+7.3 Dashboard Top Ribbon
+The dashboard top ribbon is sticky at the top and uses an ICICI Lombard orange/red gradient. It contains the logo, brand label, Home control, Menu icon, Excel upload icon and user profile icon.
+Element	Placement	Behavior
+Logo	Top-left inside dashboard ribbon, fixed/contained within ribbon height.	Static branding element; no click action.
+Brand	Immediately right of logo with white text.	Shows ICICI Lombard and IL Quantum. No click action.
+Home Control	After brand. Compact icon-only control with left/right arrows.	Left arrow calls previous-page action, home icon calls homepage action, right arrow calls next-page action.
+Menu Icon	After Home control. Icon-only hamburger.	Hover opens menu list. Dropdown must remain stable when moving cursor from icon to list.
+Excel Upload	After Menu icon.	Opens hidden file input for CSV/XLS/XLSX.
+User Icon	Far right of ribbon.	Hover opens user profile dropdown above all charts/cards.
+
+7.4 Dashboard Body Before Upload
+•	Before upload, dashboard body shows centered anniversary/portal logo on orange landing area.
+•	Custom chart builder and filters remain hidden until data exists.
+•	Module navigator strip remains visible and indicates selected module or default dashboard.
+•	Menu and Excel remain available.
+7.5 Dashboard Body After Upload
+•	Slicer row appears above dashboard chart/cards.
+•	Tiny action icons appear beside slicers: Refresh, View, Export, Clear, Uploaded Files.
+•	Dashboard sections render as cards containing table/chart area and section-specific controls.
+•	Custom chart builder appears after data upload.
+8. User Journey Flows
+J-01 Homepage to Dashboard
+26.	User opens portal.
+27.	Homepage appears.
+28.	User triggers entry.
+29.	Door animation opens.
+30.	Navigation page appears.
+31.	User selects Business Team.
+32.	Dashboard opens with default landing logo.
+J-02 Upload and Parse Files
+33.	User clicks Excel icon.
+34.	Browser file picker opens.
+35.	User selects one or multiple CSV/XLS/XLSX files.
+36.	System validates file type, size, count and duplicates.
+37.	Files are queued and shown in file panel.
+38.	Parser processes each file sequentially.
+39.	Status becomes Uploaded/Empty/Error.
+40.	Dashboard renders after data exists.
+41.	File parsing popup closes immediately after successful completion.
+J-03 Slicer Selection
+42.	User opens slicer.
+43.	Dropdown opens above charts/cards.
+44.	User searches optional values.
+45.	User selects a checkbox or uses Select All/Remove All.
+46.	Dropdown closes automatically after selection.
+47.	Dashboard data refreshes based on selected filter state.
+J-04 Refresh Charts
+48.	User clicks Refresh icon in slicer action row.
+49.	System schedules dashboard re-render.
+50.	Tables and charts refresh using current filters.
+51.	UI should not freeze for long periods.
+J-05 Clear All Filters
+52.	User clicks Clear icon in slicer action row.
+53.	System clears global filters.
+54.	Visible slicer checkboxes are unchecked.
+55.	Dashboard re-renders using full dataset.
+56.	Slicer row should not be unnecessarily rebuilt before render.
+J-06 Uploaded Files Review
+57.	User clicks Uploaded Files tiny icon.
+58.	Existing file panel opens.
+59.	User sees uploaded/queued/processing file details and progress.
+60.	Panel behavior remains same as baseline.
+J-07 Export
+61.	User clicks Export icon.
+62.	Export Options panel opens.
+63.	User chooses CSV/PPT/PDF and graph/table/raw option.
+64.	System exports requested output.
+65.	Export panel must be hidden by default and visible only after click.
+J-08 User Profile
+66.	User hovers/clicks user icon depending implementation.
+67.	Profile dropdown appears above dashboard layers.
+68.	User can click Settings or Logout.
+69.	Settings opens existing settings modal.
+70.	Logout returns to homepage.
+9. Functional Requirements
+Req ID	Area	Requirement	Priority	Acceptance Criteria
+FR-001	Homepage	System shall display homepage and execute door-opening animation before navigation.	High	Door opens and next page appears without JS errors.
+FR-002	Navigation	System shall allow Business Team dashboard entry after homepage animation.	High	Business Team button opens dashboard default landing.
+FR-003	Dashboard Ribbon	System shall display logo, brand, Home control, Menu, Excel, and User icon in one aligned ribbon.	High	Controls align consistently at 52px ribbon height.
+FR-004	Menu	System shall show dashboard module menu on hover without closing when cursor moves from icon to list.	High	Dropdown remains open while cursor travels to menu panel.
+FR-005	User Profile	System shall show compact user dropdown with name, role, settings, logout.	Medium	Dropdown overlays charts and contains configured actions.
+FR-006	Upload	System shall upload CSV/XLS/XLSX files through hidden file input.	High	Valid files are queued and processed.
+FR-007	Validation	System shall reject duplicate, invalid type, too-large or over-count files.	High	Toast warning explains skipped files.
+FR-008	Parsing	System shall parse files sequentially and update file status/progress.	High	Every file ends as Uploaded, Empty or Error.
+FR-009	Performance	System shall avoid long UI freeze during final parsing and refresh/clear render.	High	Dashboard remains reasonably responsive.
+FR-010	Slicers	System shall render configured slicers with search, select all, remove all.	High	Slicer changes update rendered data.
+FR-011	Slicer Close	System shall close slicer dropdown after value selection/select/remove action.	Medium	Dropdown closes and dashboard refresh begins.
+FR-012	Refresh	System shall refresh charts/tables using current filters without full page reload.	High	Refresh action leaves layout intact.
+FR-013	Clear Filters	System shall clear filter selections and restore full dataset view.	High	All slicer checkboxes clear and tables/charts update.
+FR-014	Uploaded Files	System shall show existing parsing/file panel from tiny icon.	Medium	File panel opens with file details.
+FR-015	Export	System shall keep Export popover hidden by default and open only on click.	High	No export panel visible on initial chart render.
+FR-016	Custom Chart	System shall allow user to configure and render custom charts after upload.	Medium	Builder appears only after data upload.
+FR-017	Settings	System shall open settings modal from user dropdown setting icon.	Medium	Theme/settings modal opens and applies selected values.
+FR-018	Module State	System shall maintain module-level uploaded files, data, filters, charts and state isolation.	High	Switching modules preserves independent workspace state.
+
+10. File Upload and Parsing Requirements
+10.1 Upload Rules
+•	Accepted extensions: .csv, .xlsx, .xls.
+•	Maximum file count and file size must follow portal configuration constants.
+•	Duplicate file names must be skipped within selected module state.
+•	Valid files are added immediately to uploadedFiles and fileQueue.
+•	File panel should open/reflect status during parsing and close immediately after all successful files finish as per V30_6 behavior.
+10.2 Parsing Flow
+71.	Receive browser File object from hidden file input.
+72.	Create file metadata with id, name, type, size, rawSize, status, monthYear, rowCount and progress.
+73.	Add metadata to uploadedFiles and add file to fileQueue.
+74.	Process fileQueue sequentially.
+75.	For CSV, use Papa Parse if available, else fallback parser.
+76.	For Excel, use XLSX to read workbook, iterate sheet names and convert each sheet to JSON rows.
+77.	Normalize row headers and add file metadata fields such as file id, file name, sheet name and MonthYear.
+78.	Append normalized rows to combinedData.
+79.	Update file status to Uploaded/Empty/Error.
+80.	After queue completes, render filters and dashboard, save module state, close file panel immediately on successful run.
+Performance Requirement
+Do not rebuild the file panel DOM on every FileReader progress event. Throttle panel updates and defer heavy dashboard rendering until after browser paint where possible.
+
+11. Data Model and Field Mapping
+Column	Display Name	Primary Use
+policy_name	Policy	Slicer and policy/group analytics
+policy_no	Policy No	Slicer and policy-level lookup
+iltc_tag	ILTC	Slicer
+whether_hospital_networked	Network Hospital	Slicer and hospital network indicator
+claim_number	Claim Number	Claim count deduplication
+claimed_amount	Claimed Amount	Financial metric
+net_sanct_amt	Approved Amount	Primary chart/table financial value
+payment_amount	Paid Amount	Financial metric
+claim_r_os_amt	Outstanding Amount	Financial metric
+disallowed_amount	Disallowed Amount	Deduction metric
+copayment_amt	Copayment Amount	Deduction metric
+relation_group	Relation Group	Slicer and chart dimension
+type_of_claim	Type Of Claim	Slicer and chart dimension
+updated_status	Updated Status	Slicer and status summary
+age_band	Age Band	Slicer and age summary
+disease_category	Disease Category	Slicer and disease summary
+ipd_opd	Ipd Opd	Slicer and IPD/OPD summary
+__monthYear	MonthYear	Derived/internal month field and slicer
+hospital_city	Hospital City	Top city summary
+hospital_state	Hospital State	Top state summary
+hospital_name	Hospital Name	Top hospital summary
+
+12. Slicer and Filter Requirements
+Slicers are displayed after data upload and must sit above dashboard charts/cards. Each slicer button opens a dropdown containing a search box, Select All control, Remove All control and value checkbox list. Dropdowns close after selection, Select All, or Remove All action.
+Slicer Order	Column	Display Label	Behavior
+1	policy_name	Policy	Filter rows by selected policy name values.
+2	policy_no	Policy No	Filter rows by selected policy numbers.
+3	iltc_tag	ILTC	Filter rows by selected ILTC tag values.
+4	whether_hospital_networked	Network Hospital	Filter by network/non-network hospital values.
+5	relation_group	Relation Group	Filter by relation group.
+6	type_of_claim	Type Of Claim	Filter by claim type.
+7	updated_status	Updated Status	Filter by latest status.
+8	age_band	Age Band	Filter by age band.
+9	disease_category	Disease Category	Filter by disease category.
+10	ipd_opd	Ipd Opd	Filter by IPD/OPD.
+11	__monthYear	MonthYear	Filter by month-year value.
+
+12.1 Slicer Action Icons
+Icon	Meaning	Required Action
+?	Refresh Charts	Schedule dashboard refresh with current filter state.
+??	Graph/Table Toggle	Toggle all dashboard sections between chart and table view.
+?	Export	Open Export Options popover. Popover hidden by default.
+Broom	Clear All Filters	Clear globalFilters, uncheck visible checkboxes, refresh dashboard.
+???	Uploaded Files	Open existing uploaded/parsing file details panel.
+
+13. Dashboard Tables and Charts
+Dashboard sections are generated after upload. Each section has a titled card, table wrap, chart box, insight area and small section-level actions. Default view may be table or chart based on portal state. The dashboard should render filteredData derived from combinedData and globalFilters.
+Section	Dimension / Logic	Key Metrics
+Claim Status Summary	updated_status	Claim Count, Claimed, Approved, Paid, Outstanding, Deduction, ACS, Share %
+IPD / OPD Summary	ipd_opd	Claim Count, Claimed, Approved, Paid, Outstanding, ACS, Share %
+Type of Claim Summary	type_of_claim	Claim Count, Claimed, Approved, Paid, Deduction, ACS, Share %
+Relation Wise Claims	relation_group	Claim Count, Claimed, Approved, Paid, ACS, Share %
+Age Band Wise Claims	age_band	Claim Count, Claimed, Approved, Paid, ACS, Share %
+Disease Category Wise Claims	disease_category	Claim Count, Claimed, Approved, Paid, Deduction, ACS, Share %
+Top Hospital Cities	hospital_city	Claim Count, Claimed, Approved, Paid, ACS, Share %
+Top Hospitals	hospital_name	City, State, Claim Count, Approved, Paid, ACS, Network Flag
+Deduction Analysis	reason_for_disallowance or equivalent	Claim Count, Claimed, Approved, Disallowed, Copayment, Total Deduction, Deduction %
+TAT / Settlement Analysis	Month bucket from payment/inward/doa fields	Count, Average TAT, Median TAT, Average LOS, Approved, Paid
+Sum Insured Utilization	policy/group dimension	Claim Count, Sum Insured, Approved, Balance SI, Utilization %, ACS
+
+14. Export and Uploaded File Panel Requirements
+14.1 Export
+•	Export popup must be hidden by default.
+•	Export popup opens only when user clicks Export icon.
+•	Export options include CSV, PPT and PDF groups.
+•	CSV supports graph, table and raw data where implemented.
+•	PPT and PDF support graph and table actions.
+•	Export popup must overlay above charts/cards and must not remain open on initial render.
+14.2 Uploaded File Panel
+•	File panel shows uploaded file list, file status, progress and remove controls.
+•	Tiny Uploaded Files icon must call same existing file panel behavior as previous top-menu Files button.
+•	Panel opens during upload/parsing and may close immediately when all files successfully processed.
+•	Panel must not close immediately because of outside-click handler when opened from tiny slicer icon.
+15. Settings and Theme Requirements
+•	Settings modal is opened from User Profile dropdown settings icon.
+•	Settings should control theme preset, color scheme, dark mode, font size and other existing configuration items.
+•	Applying settings must update CSS variables and persist within session as currently designed.
+•	Settings modal should close when user clicks outside modal content.
+16. Non-Functional Requirements
+Area	Requirement
+Performance	Parser and dashboard rendering must avoid long main-thread blocking. Use throttled progress updates and scheduled renders.
+Responsiveness	Layout must work on desktop and have responsive fallback for smaller screens.
+Reliability	A syntax error in dashboard logic must not be introduced; every JS change must be validated to protect homepage animation.
+Usability	Dropdowns must remain stable, popups must not open by default, and slicers must close after selection.
+Maintainability	Code must remain in numbered block format. Future changes must be done by block replacement.
+Accessibility	Controls must have titles/tooltips where possible and readable font/color contrast.
+Security	Client-side files must remain in browser memory. Production version should add authentication, authorization and dependency review.
+
+17. Security and Governance
+•	Production implementation should evaluate SSO or enterprise authentication for non-local deployment.
+•	Role-based access should be implemented server-side in future enterprise deployment.
+•	Uploaded data should not leave browser unless a backend integration is explicitly introduced.
+•	External library versions must be pinned and scanned before production release.
+•	No hard-coded sensitive credentials must exist in the HTML file.
+•	If production hosting is required, apply HTTPS, CSP, dependency integrity checks and file size constraints.
+18. Error Handling and Notifications
+•	Use toast for success, warning and error messages.
+•	Invalid file type, duplicate file, too-large file, empty file and parsing error must show user-friendly messages.
+•	Export failure should show error toast and preserve dashboard state.
+•	If required columns are missing for a section, show message inside that section rather than crashing.
+•	If file parsing fails, continue processing remaining queued files when possible.
+19. Step-by-Step Development Plan
+81.	Create a single HTML file with linked CDN libraries for CSV parsing, Excel parsing and chart rendering.
+82.	Build global CSS variables and theme palette for ICICI Lombard official colors.
+83.	Implement homepage HTML and CSS including door animation. Keep it isolated from dashboard logic.
+84.	Implement navigation/business user entry page.
+85.	Implement dashboard shell with logo, brand, Home control, Menu icon, Excel icon and user profile dropdown.
+86.	Implement dashboard module menu categories and submenu actions.
+87.	Implement hidden file input controls and file queue metadata structure.
+88.	Implement file validation for extension, duplicate name, file size and file count.
+89.	Implement CSV parser and Excel workbook parser with normalized row keys.
+90.	Implement module-specific state containers for uploadedFiles, queue, combinedData, filteredData, filters and view states.
+91.	Implement file panel UI and progress update throttling.
+92.	Implement slicer row after upload, including search, select all and remove all per slicer.
+93.	Implement getFilteredData() and ensure all tables/charts use filteredData.
+94.	Implement dashboard section configuration and summary builder functions.
+95.	Implement table rendering and chart rendering functions.
+96.	Implement refresh, clear filters, view toggle, export and file panel actions from tiny slicer icons.
+97.	Implement custom chart builder after upload.
+98.	Implement settings modal and theme update functions.
+99.	Implement popup close behavior without breaking homepage animation.
+100.	Conduct full QA with multiple file upload, slicers, refresh, export, clear and navigation journeys.
+20. API, Library and Dependency Plan
+Library / Feature	Purpose	Implementation Note
+Papa Parse	CSV parsing	Use if available; fallback parser can handle simple CSV cases.
+SheetJS / XLSX	Excel parsing	Read XLS/XLSX workbook, iterate sheets and convert to JSON.
+Chart.js	Chart rendering	Render bar, line, pie, horizontal bar and custom charts.
+FileReader API	Client-side file reading	Read text for CSV and ArrayBuffer for Excel.
+Blob / URL APIs	Exports/downloads	Generate downloadable CSV/PDF/PPT assets when supported.
+CSS keyframes	Animations	Door animation, icon bounce, dropdown pop, file panel and export animations.
+
+21. Testing Strategy
+21.1 Functional Test Cases
+Test ID	Scenario	Steps	Expected Result
+TC-001	Homepage door animation	Open portal and click entry action	Door opens and navigation appears
+TC-002	Dashboard entry	Click Business Team	Dashboard default landing appears
+TC-003	Menu stability	Hover Menu and move cursor to list	Menu remains open
+TC-004	File upload	Upload valid XLSX	File parses, dashboard renders, file panel closes immediately after success
+TC-005	Invalid file	Upload invalid type	File skipped and warning toast shown
+TC-006	Slicer checkbox	Select slicer value	Dropdown closes and table/chart data updates
+TC-007	Slicer search	Type into slicer search	Values are filtered within dropdown
+TC-008	Select all	Click Select All	Visible searched values are selected and dashboard updates
+TC-009	Remove all	Click Remove All	Selections clear and dashboard updates
+TC-010	Refresh	Click Refresh icon	Dashboard refreshes without long lock
+TC-011	Clear filters	Click Clear icon	Filters clear and full data returns
+TC-012	Export	Click Export icon	Export panel opens only after click
+TC-013	Uploaded Files	Click tiny files icon	Existing file panel opens
+TC-014	User dropdown	Hover user icon	User panel overlays above charts and shows Settings/Logout
+TC-015	Settings	Click settings icon	Settings modal opens
+TC-016	Logout	Click Logout	Returns to homepage
+
+22. Acceptance Criteria
+•	Portal must load without browser console syntax errors.
+•	Homepage door animation must work after every code change.
+•	Dashboard must open from Business Team and show default landing before upload.
+•	Upload/parser must process valid files and report errors without crashing.
+•	Slicers must affect table and chart values correctly.
+•	Export popup must remain hidden by default.
+•	Refresh and Clear must not lock the page for an excessive duration.
+•	User dropdown must overlay charts and remain visually compact.
+•	All popups must close or remain open according to defined behavior.
+•	Documented block numbering must be maintained for future changes.
+23. Deployment, Versioning and Support
+•	Use clear version naming such as IL_Quantum_Portal -IL theme V30_6 and increment for future releases.
+•	Before releasing a new version, perform smoke test on homepage, dashboard, file upload, slicers and export.
+•	Keep the last known working HTML file as rollback baseline.
+•	All future code changes should specify impacted block number and complete replacement block.
+•	Production deployment should use controlled hosting with version backup and dependency review.
+24. Traceability Matrix
+Req ID	Area	Design / Build Reference	Acceptance
+FR-001	Homepage	Covered in Sections 7-15	Door opens and next page appears without JS errors.
+FR-002	Navigation	Covered in Sections 7-15	Business Team button opens dashboard default landing.
+FR-003	Dashboard Ribbon	Covered in Sections 7-15	Controls align consistently at 52px ribbon height.
+FR-004	Menu	Covered in Sections 7-15	Dropdown remains open while cursor travels to menu panel.
+FR-005	User Profile	Covered in Sections 7-15	Dropdown overlays charts and contains configured actions.
+FR-006	Upload	Covered in Sections 7-15	Valid files are queued and processed.
+FR-007	Validation	Covered in Sections 7-15	Toast warning explains skipped files.
+FR-008	Parsing	Covered in Sections 7-15	Every file ends as Uploaded, Empty or Error.
+FR-009	Performance	Covered in Sections 7-15	Dashboard remains reasonably responsive.
+FR-010	Slicers	Covered in Sections 7-15	Slicer changes update rendered data.
+FR-011	Slicer Close	Covered in Sections 7-15	Dropdown closes and dashboard refresh begins.
+FR-012	Refresh	Covered in Sections 7-15	Refresh action leaves layout intact.
+FR-013	Clear Filters	Covered in Sections 7-15	All slicer checkboxes clear and tables/charts update.
+FR-014	Uploaded Files	Covered in Sections 7-15	File panel opens with file details.
+FR-015	Export	Covered in Sections 7-15	No export panel visible on initial chart render.
+FR-016	Custom Chart	Covered in Sections 7-15	Builder appears only after data upload.
+FR-017	Settings	Covered in Sections 7-15	Theme/settings modal opens and applies selected values.
+FR-018	Module State	Covered in Sections 7-15	Switching modules preserves independent workspace state.
+
+25. Appendix: Build Checklist and Master Prompt
+25.1 Developer Build Checklist
+•	Keep homepage, navigation and dashboard sections modular and block-numbered.
+•	Never insert broken JavaScript template strings or unclosed regex expressions.
+•	After any JavaScript change, test homepage door animation first.
+•	After any slicer change, test checkbox, Select All, Remove All, Clear, Refresh and Export.
+•	After any parser change, test one CSV, one XLSX, multiple files and last-file completion.
+•	Keep Export panel hidden by default.
+•	Do not rebuild slicer row unnecessarily during Clear or Refresh.
+•	Throttle file panel updates during parsing.
+•	Maintain ICICI Lombard colors, Mulish font and existing animation style.
+25.2 Master Prompt for AI or Development Team
+Build a single-page browser-based portal named IL Quantum Portal. The web application must have a homepage with door opening animation, a business user navigation step, and a dashboard with ICICI Lombard orange/red ribbon. The dashboard must include logo, brand, compact icon-only Home control with back/forward arrows, icon-only menu with stable hover dropdown, Excel upload icon, user profile dropdown, slicer row after data upload, file upload parser, chart/table dashboard, export options, custom chart builder, settings modal and uploaded file panel. Use client-side JavaScript parsing for CSV/XLS/XLSX, maintain module-wise states, normalize column names, create slicers with search/select all/remove all, render dashboard tables/charts based on filtered data, and preserve existing micro-interactions. Follow the exact requirements and acceptance criteria in this BRD. Do not break homepage door animation and keep code organized in numbered block sections for safe future replacement.
+ 
+Appendix A - Page Wireframes and Interaction Blueprints
+This appendix converts the BRD into implementation-ready wireframes for each Portal page and popup. The wireframes are deliberately text-based so that developers can reproduce exact placement, hierarchy, and behavior in HTML/CSS/JavaScript without relying on image assets. Maintain all existing IL Quantum Portal V30_6 functionality, animations, images, parser behavior, slicer behavior, export behavior, and dashboard logic while implementing these layouts.
+Implementation rule: wireframes describe placement and behavior. They must not be interpreted as permission to redesign the portal. Preserve the current IL theme, orange ribbon, dark-blue typography, Mulish font styling, homepage door animation, dashboard logo, and all existing workflows unless a future change request explicitly overrides them.
+
+Wireframe 1 - Homepage / Door Animation Landing Page
+Purpose: Provide the first entry point with the branded homepage and door opening animation that reveals the login/navigation page.
++----------------------------------------------------------------------------+
+¦                                                                            ¦
+¦                       [Centered IL / Anniversary Visual]                    ¦
+¦                                                                            ¦
+¦                         IL Quantum Portal Entry                             ¦
+¦                                                                            ¦
+¦                       [ Clickable Homepage / Door ]                         ¦
+¦                                                                            ¦
++----------------------------------------------------------------------------+
+            On click: door panels slide/open ? navigation page appears
+
+Placement rules	Micro-interactions / actions	Acceptance checks
+• Keep homepage as the initial visible page on load.
+• Hero/door visual must be centered in the viewport with enough breathing room.
+• No dashboard controls, slicers, upload button, or menus should appear on homepage.
+• Door animation assets and CSS classes must remain isolated from dashboard script changes.	• Click on homepage entry triggers internalLogin().
+• Add door-open class to homepage container.
+• After animation delay, hide homepage and show navigation page.
+• If JavaScript has any syntax error anywhere, homepage will not open, so all JS changes require syntax validation.	• Homepage loads first.
+• Door animation opens smoothly.
+• Navigation page appears after animation.
+• No dashboard or login content overlaps homepage before click.
+
+Wireframe 2 - Login / Navigation Page
+Purpose: Allow authenticated internal users to enter the Business Team dashboard while retaining Home/Back/Next navigation controls.
++----------------------------------------------------------------------------+
+¦                         Internal Navigation Page                            ¦
+¦                                                                            ¦
+¦       +---------------+    +---------------+    +---------------+          ¦
+¦       ¦ Business Team ¦    ¦ Other Module  ¦    ¦ Other Module  ¦          ¦
+¦       ¦  Open Dashboard¦   ¦  Placeholder  ¦    ¦  Placeholder  ¦          ¦
+¦       +---------------+    +---------------+    +---------------+          ¦
+¦                                                                            ¦
+¦                         [‹]   [Home]   [›]                                  ¦
++----------------------------------------------------------------------------+
+
+Placement rules	Micro-interactions / actions	Acceptance checks
+• Navigation cards must be horizontally balanced and visually separated.
+• Business Team card is the primary route into the dashboard.
+• Home/Back/Next controls remain available for portal-level navigation.
+• Use same IL corporate color language and Mulish typography.	• Business Team click calls openInternalEmp().
+• If internal login state is valid, show dashboard page.
+• Home returns to homepage and resets dashboard/login view.
+• Back/Next should use portal history helpers where available.	• Business Team opens dashboard correctly.
+• Navigation cards do not disturb door animation.
+• Home button returns to homepage.
+• No dashboard elements are visible until Business Team is opened.
+
+Wireframe 3 - Dashboard Before Upload
+Purpose: Display the dashboard shell before data upload with top ribbon controls, module title strip, and centered landing logo/body area.
++----------------------------------------------------------------------------+
+¦ [Logo] | ICICI Lombard / IL Quantum | [‹ ?? ›] | [?] | [?? Excel] | [??] ¦
++----------------------------------------------------------------------------¦
+¦ ? Default Dashboard                                                        ¦
++----------------------------------------------------------------------------¦
+¦                                                                            ¦
+¦                                                                            ¦
+¦                     [Centered 25 Years / IL Visual]                         ¦
+¦                                                                            ¦
+¦                                                                            ¦
++----------------------------------------------------------------------------+
+
+Placement rules	Micro-interactions / actions	Acceptance checks
+• Logo stays fixed at top-left inside the orange ribbon.
+• Brand text appears immediately after logo.
+• Home pill, Menu icon, Excel icon, and User icon align on one horizontal row.
+• Settings must be inside user dropdown, not the main ribbon.
+• Body shows centered logo only before upload; no Custom Chart Builder or charts before upload.	• Home pill: ‹ = previous, ?? = home, › = next.
+• Menu opens module list on hover with stable hover bridge.
+• Excel opens file input.
+• User profile hover opens compact dropdown.
+• Dashboard title strip changes with module selection.	• Before upload, no chart/table cards are visible.
+• Excel icon allows file upload.
+• Menu dropdown does not close while cursor moves from icon to list.
+• User dropdown overlays all dashboard layers.
+
+Wireframe 4 - Dashboard Menu and Submenu Navigation
+Purpose: Show the complete dashboard module navigation hidden under the Menu icon, with search and nested module selection.
+Orange ribbon: [?]
+               ? hover
++----------------------------+       +------------------------+
+¦ ?? Search menu...        × ¦       ¦ Health Claim           ¦
++----------------------------¦       +------------------------¦
+¦ ?? Health Claim        ›   ¦------?¦ ?? GHI Summary       › ¦
+¦ ?? Muse Data           ›   ¦       ¦ ?? Retail            › ¦
+¦ ?? HCU                 ›   ¦       ¦ ? Claim Rejections  › ¦
++----------------------------+       +------------------------+
+
+Placement rules	Micro-interactions / actions	Acceptance checks
+• Menu dropdown appears below Menu icon and above dashboard cards.
+• Submenu opens to the right of the selected category.
+• Search field stays at top of menu panel.
+• Transparent hover bridge prevents accidental close between icon, category, and submenu.	• Search filters visible menu items.
+• Clear search button resets menu filtering.
+• Category hover opens sublist.
+• Submenu click calls handleDashboardHomeMenuSelection(moduleName).
+• Module title strip updates with selected module name.	• User can move cursor from Menu icon to list without closing menu.
+• Submenu opens and remains stable on hover.
+• Selected module opens separate module workspace.
+• Existing uploaded data state is preserved per module.
+
+Wireframe 5 - Dashboard After Upload with Slicers and Action Icons
+Purpose: Display slicers, action icons, and dashboard cards after Excel/CSV file parsing is complete.
++----------------------------------------------------------------------------+
+¦ [Logo] | Brand | [‹ ?? ›] | [?] | [?? Excel] | [??]                       ¦
++----------------------------------------------------------------------------¦
+¦ ? Health Claim > GHI Summary                                               ¦
++----------------------------------------------------------------------------¦
+¦ [Policy] [Policy No] [ILTC] [Network Hosp] [Relation] [Type] [Status]      ¦
+¦ [Age Band] [Disease] [IPD/OPD] [MonthYear] [?] [??] [?] [??] [??]          ¦
++----------------------------------------------------------------------------¦
+¦ +--------------------+ +--------------------+                              ¦
+¦ ¦ Chart/Table Card 1 ¦ ¦ Chart/Table Card 2 ¦                              ¦
+¦ +--------------------+ +--------------------+                              ¦
+¦ +--------------------+ +--------------------+                              ¦
+¦ ¦ Chart/Table Card 3 ¦ ¦ Chart/Table Card 4 ¦                              ¦
+¦ +--------------------+ +--------------------+                              ¦
++----------------------------------------------------------------------------+
+
+Placement rules	Micro-interactions / actions	Acceptance checks
+• Slicer row appears below module title strip.
+• Slicer row is centered and wraps naturally on smaller screens.
+• Tiny action icons appear at end of slicer row.
+• Dashboard cards begin below slicer/action row.
+• All slicer dropdowns and export popup must overlay above chart cards.	• Slicer checkbox selection updates globalFilters and refreshes table/chart values.
+• Refresh icon schedules dashboard rerender smoothly.
+• Graph/Table icon toggles all sections.
+• Export icon opens Export Options panel only on click, not by default.
+• Clear icon clears global filters and updates values.
+• Files icon opens existing uploaded file panel.	• Tables and charts update after slicer selection.
+• Export panel hidden until clicked.
+• Clear filter does not freeze page for long period.
+• Uploaded Files icon shows parsing/file details panel.
+
+Wireframe 6 - Slicer Dropdown with Search, Select All, Remove All
+Purpose: Define the internal layout and actions of each slicer dropdown.
+Clicked slicer: [Updated Status]
+                 ?
++------------------------------------+
+¦ Search...                    ?  ×  ¦
++------------------------------------¦
+¦ ? Claim Settled                    ¦
+¦ ? Outstanding                      ¦
+¦ ? Rejected                         ¦
+¦ ? Under Process                    ¦
++------------------------------------+
+
+Placement rules	Micro-interactions / actions	Acceptance checks
+• Dropdown width approx. 250px and placed directly below slicer pill.
+• Toolbar uses 1 search field and 2 tiny round buttons.
+• List should scroll if values exceed available height.
+• Dropdown z-index must be higher than chart cards.	• Search filters values inside list only.
+• ? selects all visible searched values.
+• × removes/clears all selected values for that slicer.
+• Checkbox selection closes slicer dropdown after selection.
+• Values refresh charts/tables after selection.	• Search works without full dashboard refresh.
+• Select All respects currently visible searched values.
+• Remove All clears slicer state.
+• Dropdown closes after selection action.
+
+Wireframe 7 - Export Options Popup from Slicer Action Row
+Purpose: Provide export choices for CSV, PPT, and PDF from the tiny export icon.
+Action icon: [?]
+             ? click
++-------------------------+
+¦ Export Options          ¦
++-------------------------¦
+¦ ??  [??] [??] [??]       ¦  CSV Graph / Table / Raw
+¦ ??  [??] [??]            ¦  PPT Graph / Table
+¦ ??  [??] [??]            ¦  PDF Graph / Table
++-------------------------+
+
+Placement rules	Micro-interactions / actions	Acceptance checks
+• Popup opens near export icon in slicer action row.
+• Popup must be hidden by default.
+• Popup overlays charts/cards and does not push layout.
+• Rows use compact icon buttons matching existing style.	• Export icon toggles active state.
+• CSV graph/table/raw call handleExportOption with corresponding arguments.
+• PPT graph/table call existing export handlers.
+• PDF graph/table call existing export handlers.
+• Outside click closes export popup through existing behavior.	• Export popup is not visible on page load.
+• Popup appears only after export icon click.
+• All export buttons trigger existing export functions.
+• No overlap causes layout shift.
+
+Wireframe 8 - Uploaded Files / Parsing Panel
+Purpose: Show parsed and queued files with progress, status, row count, and remove action.
+Triggered by tiny [??] icon
++--------------------------------------------+
+¦ Uploaded Files                         ^   ¦
++--------------------------------------------¦
+¦ File A.xlsx       Uploaded      100%   ×   ¦
+¦ File B.csv        Processing     72%   ×   ¦
+¦ File C.xlsx       Queued          0%   ×   ¦
++--------------------------------------------+
+
+Placement rules	Micro-interactions / actions	Acceptance checks
+• Panel appears as existing file dropdown/panel, not a new design.
+• Tiny Files icon in slicer row must call toggleFilePanel().
+• Panel should show immediately when icon is clicked.
+• Panel should not auto-close immediately due to outside-click conflict.	• Upload starts from Excel icon.
+• File panel opens compactly during processing.
+• Progress reaches 100% after parsing.
+• After all files successfully process, auto-close delay is 0 seconds as per latest behavior.	• File list appears from tiny Files icon.
+• Progress updates smoothly.
+• Last file completion does not freeze dashboard for long period.
+• Files with issues remain visible with status.
+
+Wireframe 9 - User Profile Dropdown
+Purpose: Display compact user popup at upper-right of ribbon with Settings beside user name and Logout below.
+Top-right ribbon icon: [??]
+                       ? hover
++----------------------+
+¦ Ankit Sharma      ?  ¦
+¦ Business Team         ¦
++----------------------¦
+¦ ?? Logout             ¦
++----------------------+
+
+Placement rules	Micro-interactions / actions	Acceptance checks
+• User icon sits at far right of orange ribbon.
+• Dropdown appears below icon and overlays charts, slicers, and popups.
+• Popup width auto-fits content with min/max width guardrails.
+• Settings tiny icon is beside user name, not below role.	• Hover over user icon opens popup.
+• Click Settings icon calls openSettingsPanel().
+• Click Logout calls goToHome().
+• Popup closes when cursor leaves profile area because it is CSS-hover based.	• User popup does not crash dashboard because no new JS is required.
+• Popup overlays all chart layers.
+• Settings modal opens from tiny icon.
+• Logout returns to homepage.
+
+Wireframe 10 - Settings Modal
+Purpose: Display dashboard settings and theme controls through the existing modal behavior.
+Triggered by: user dropdown ?
++------------------------------------+
+¦ Dashboard Settings                 ¦
++------------------------------------¦
+¦ Theme Preset        [ dropdown ]   ¦
+¦ Color Scheme        [ dropdown ]   ¦
+¦ Dark Mode           [ on/off   ]   ¦
+¦ Font Size           [ control  ]   ¦
+¦ Top N               [ control  ]   ¦
+¦ Max File Size       [ control  ]   ¦
++------------------------------------¦
+¦ [Apply] [Reset] [Close]            ¦
++------------------------------------+
+
+Placement rules	Micro-interactions / actions	Acceptance checks
+• Modal is centered with backdrop overlay.
+• Modal should stay above dashboard and user dropdown.
+• Use existing settings CSS and modal structure.
+• No settings fields should be removed unless explicitly requested.	• Apply updates CSS variables and dashboard theme.
+• Reset returns default settings.
+• Close hides modal.
+• Outside click behavior follows current implementation.	• Settings open from user dropdown tiny icon.
+• Existing theme/font controls work.
+• Modal does not disturb dashboard state.
+• No homepage behavior affected.
+
+Wireframe 11 - Dashboard Chart/Table Card
+Purpose: Define a repeating dashboard analytics section card with title, chart controls, table/chart area, and insights.
++----------------------------------------------+
+¦ Section Title                         ?? ?? ?? ??¦
++----------------------------------------------¦
+¦ [ Table view OR Chart canvas depending state ]¦
+¦                                              ¦
++----------------------------------------------¦
+¦ Insight text / summary notes                 ¦
++----------------------------------------------+
+
+Placement rules	Micro-interactions / actions	Acceptance checks
+• Cards are placed in dashboard grid below slicer row.
+• Each card has header with section title on left and tools on right.
+• Table and chart containers exist simultaneously but visibility toggles.
+• Insights sit below table/chart area.	• Cycle chart type button changes chart type for that section.
+• Export CSV exports section table.
+• Download image exports chart canvas.
+• Toggle view changes section chart/table view.
+• Global View icon toggles all sections.	• Cards render section by section after V30_4 performance fix.
+• Table/chart values respond to slicer filters.
+• No card overlaps slicer dropdowns or export popup.
+• Icons retain existing behavior.
+
+Wireframe 12 - Custom Chart Builder
+Purpose: Display custom chart controls only after data upload and use selected columns to render a custom chart.
++----------------------------------------------------+
+¦ Custom Chart Builder                               ¦
++----------------------------------------------------¦
+¦ Chart Type [dropdown]  X Axis [dropdown]           ¦
+¦ Y Axis [dropdown]     Group [dropdown]  Top N [ ]  ¦
+¦ [Render Custom Chart]                              ¦
++----------------------------------------------------¦
+¦                  [Custom Chart Canvas]             ¦
++----------------------------------------------------+
+
+Placement rules	Micro-interactions / actions	Acceptance checks
+• Custom Chart Builder remains hidden before upload.
+• After upload, builder appears below dashboard sections or configured area.
+• Controls use existing dropdown/input styling.
+• Chart area uses existing custom chart canvas.	• Populate columns after data upload.
+• Render button builds custom chart from selected fields.
+• Top N limits categories.
+• Existing custom chart instance is destroyed/recreated safely.	• Builder not visible before upload.
+• Builder visible after combinedData exists.
+• Custom chart renders without affecting standard dashboard sections.
+• Changing modules preserves module-specific state.
+
+Wireframe 13 - Mobile / Narrow Screen Behavior
+Purpose: Define graceful wrapping order for ribbon, slicers, cards, and popups on smaller screens.
++------------------------------+
+¦ Logo | Brand                 ¦
+¦ [‹ ?? ›] [?] [??] [??]       ¦
++------------------------------¦
+¦ ? Current Module             ¦
++------------------------------¦
+¦ [Policy] [Status] [Age]      ¦
+¦ [?] [??] [?] [??] [??]       ¦
++------------------------------¦
+¦ [Single-column dashboard card]¦
++------------------------------+
+
+Placement rules	Micro-interactions / actions	Acceptance checks
+• Ribbon items may wrap but remain in logical order.
+• User popup should align from available side if right side is constrained.
+• Submenus may stack below categories on small screens.
+• Cards should become single-column if viewport is narrow.	• All hover/click actions remain accessible.
+• Slicer dropdowns remain above cards and should not overflow beyond viewport where possible.
+• File panel and settings modal remain usable.	• No horizontal scrolling for main layout unless unavoidable for large tables.
+• Important controls remain visible.
+• Menu and user dropdowns do not get clipped.
+• Charts/tables remain readable.
+
+Appendix B - End-to-End Journey Flows
+Journey 1 - First entry to dashboard
+1. User opens the portal HTML file.
+2. Homepage landing appears with door visual only.
+3. User clicks homepage entry area.
+4. internalLogin() marks internalLoggedIn true and adds door-open class.
+5. After animation delay, homepage hides and navigation page displays.
+6. User clicks Business Team.
+7. openInternalEmp() opens dashboard page and calls resetDashboardToModuleLanding().
+8. Dashboard shows top ribbon, module title strip, and pre-upload centered image.
+Journey 2 - Select module before upload
+1. User hovers Menu icon.
+2. Menu dropdown opens and remains stable because hover bridge covers icon-to-list gap.
+3. User hovers category such as Health Claim.
+4. Submenu opens to the right.
+5. User clicks GHI Summary or another submenu item.
+6. openDashboardModule(moduleName) saves previous module state and restores selected module state.
+7. Title strip updates to selected module.
+8. If selected module has no data, centered landing image remains visible.
+Journey 3 - Upload and parse files
+1. User clicks Excel icon in ribbon.
+2. Hidden file input opens.
+3. User selects CSV/XLSX/XLS files.
+4. handleFileUpload validates format, size, duplicate names, and count.
+5. Valid files are added to uploadedFiles and fileQueue.
+6. File panel opens compactly and shows queued/processing status.
+7. processFiles reads each file sequentially.
+8. parseCSV or parseExcel parses rows.
+9. normalizeRows standardizes columns and adds metadata.
+10. appendData adds rows to combinedData and uniqueColumns.
+11. runStableProcessingProgress completes progress and continues queue.
+12. After queue ends, dashboard renders filters and sections.
+Journey 4 - Filter dashboard with slicers
+1. After data upload, slicer row appears.
+2. User clicks a slicer pill.
+3. Dropdown opens above charts/cards.
+4. User can search values inside dropdown.
+5. User checks a value, clicks Select All, or clicks Remove All.
+6. globalFilters is updated.
+7. Dropdown closes after selection.
+8. Dashboard table/chart values rerender based on getFilteredData().
+Journey 5 - Refresh and clear filters
+1. User clicks Refresh icon beside slicers.
+2. Dashboard rerender is scheduled to avoid immediate UI lock.
+3. User clicks Clear All icon.
+4. globalFilters is reset to empty object.
+5. Visible slicer checkboxes are unchecked.
+6. Dashboard rerender is scheduled.
+7. Tables/charts return to unfiltered values.
+Journey 6 - Export dashboard data
+1. User clicks Export icon beside slicers.
+2. Export Options popup opens only on click and overlays charts.
+3. User chooses CSV/PPT/PDF and graph/table/raw option.
+4. handleExportOption triggers correct export behavior.
+5. Outside click closes export popup through existing popup closer logic.
+Journey 7 - View uploaded file details
+1. User clicks tiny Uploaded Files icon beside slicers.
+2. toggleFilePanel() opens the existing uploaded file panel.
+3. Panel lists uploaded/queued/error files with status and progress.
+4. User can review parsing status and close/collapse using existing panel behavior.
+Journey 8 - User profile settings/logout
+1. User hovers the top-right user icon.
+2. Compact user dropdown appears above charts/icons.
+3. User clicks tiny Settings icon beside user name.
+4. Existing Settings modal opens.
+5. User clicks Logout.
+6. goToHome() returns portal to homepage.
+Journey 9 - Switch modules after upload
+1. User opens Menu while dashboard has data.
+2. User selects another module.
+3. Current module upload/data/filter/chart state is saved.
+4. New module state is restored.
+5. If new module has uploaded data, filters and cards render.
+6. If no data exists, landing image appears.
+Appendix C - Wireframe Implementation Checklist
+? Homepage door animation works before and after any dashboard code change.
+? Menu dropdown remains open while cursor moves from icon to category list.
+? Submenu remains open while cursor moves from category to sublist.
+? User dropdown appears above charts and has Settings beside the user name.
+? Settings icon is not visible in main ribbon if held inside user dropdown.
+? Uploaded Files icon is available from slicer/action row and opens file panel.
+? Export Options popup hidden by default and opens only on export click.
+? Slicer dropdowns close after item/select/remove actions.
+? Table/chart values change after slicer filter selection.
+? Refresh and Clear do not freeze page for extended period.
+? File parsing panel updates without excessive DOM rebuilds.
+? Last file completion does not cause prolonged unresponsiveness.
+? All popups overlay charts without shifting layout.
+? All major controls preserve existing V30_6 behavior.
